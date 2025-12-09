@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* Optional: Add smooth scrolling and base styles */
+html, body {
+  height: 100%;
+  margin: 0;
+}
