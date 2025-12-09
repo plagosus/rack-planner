@@ -111,27 +111,54 @@ export default function RackPlanner() {
  const [customType, setCustomType] = useState<ModuleType>('generic');
  const [customImage, setCustomImage] = useState<string | null>(null);
 
- const fileInputRef = useRef<HTMLInputElement>(null);
-
- // --- Persistence & Initialization ---
-
- // Handle Dark Mode
- useEffect(() => {
-   console.log('Dark mode state changed:', isDarkMode);
-   const root = window.document.documentElement;
-   if (isDarkMode) {
-     root.classList.add('dark');
-     console.log('Added dark class to html');
-   } else {
-     root.classList.remove('dark');
-     console.log('Removed dark class from html');
-   }
-   localStorage.setItem('darkMode', String(isDarkMode));
- }, [isDarkMode]);
-
- // Load from LocalStorage on mount
- useEffect(() => {
-    try {
+   const fileInputRef = useRef<HTMLInputElement>(null);
+   const containerRef = useRef<HTMLElement>(null);
+   const [scale, setScale] = useState(1);
+ 
+   // --- Persistence & Initialization ---
+ 
+   // Handle Dark Mode
+   useEffect(() => {
+     console.log('Dark mode state changed:', isDarkMode);
+     const root = window.document.documentElement;
+     if (isDarkMode) {
+       root.classList.add('dark');
+       console.log('Added dark class to html');
+     } else {
+       root.classList.remove('dark');
+       console.log('Removed dark class from html');
+     }
+     localStorage.setItem('darkMode', String(isDarkMode));
+   }, [isDarkMode]);
+ 
+   // Handle Responsive Scaling
+   useEffect(() => {
+     const handleResize = () => {
+       if (containerRef.current) {
+         const containerH = containerRef.current.clientHeight;
+                const containerW = containerRef.current.clientWidth;
+                
+                const padding = 0; // p-8 removed
+                const rackH = (rackSettings.heightU * U_PIXELS) + 32 + 16 + 50; // Roof(32) + Floor(16) + Buffer
+                const rackW = (rackSettings.widthStandard === '19inch' ? WIDTH_19_INCH : WIDTH_10_INCH) + 50; // Buffer
+         
+                const scaleH = (containerH - padding) / rackH;         const scaleW = (containerW - padding) / rackW;
+ 
+         // Fit to screen, but don't zoom in past 100%
+         setScale(Math.min(1, scaleH, scaleW));
+       }
+     };
+ 
+     window.addEventListener('resize', handleResize);
+     // Call immediately and also after a short delay to ensure layout is settled
+     handleResize();
+     setTimeout(handleResize, 100); 
+ 
+     return () => window.removeEventListener('resize', handleResize);
+   }, [rackSettings]);
+ 
+   // Load from LocalStorage on mount
+   useEffect(() => {    try {
         const savedSettings = localStorage.getItem('rackSettings');
         const savedSlots = localStorage.getItem('rackSlots');
         const savedCustomLib = localStorage.getItem('customLibrary');
@@ -504,18 +531,37 @@ export default function RackPlanner() {
  </div>
  </header>
 
- <main className="flex-1 flex overflow-hidden">
- 
- {/* LEFT: Rack Editor */}
- <section className="flex-1 relative overflow-auto p-8 flex justify-center bg-gray-200 dark:bg-[#0d1117] transition-colors">
- 
- {/* The Rack */}
- <div 
- className="flex flex-col relative transition-all duration-500 ease-in-out shrink-0"
- style={{ 
- width: rackSettings.widthStandard === '19inch' ? WIDTH_19_INCH : WIDTH_10_INCH 
- }}
- >
+  <main className="flex-1 flex">
+  
+        {/* LEFT: Rack Editor */}
+  
+        <section 
+  
+          ref={containerRef}
+  
+          className="flex-1 relative overflow-hidden flex flex-col justify-center items-center bg-gray-200 dark:bg-[#0d1117] transition-colors max-h-[calc(100vh-56px)]"
+  
+        >
+  
+          
+  
+          {/* The Rack */}
+  
+          <div 
+  
+            className="flex flex-col relative transition-all duration-500 ease-in-out shrink-0"
+  
+            style={{ 
+  
+              width: rackSettings.widthStandard === '19inch' ? WIDTH_19_INCH : WIDTH_10_INCH,
+  
+              transform: `scale(${scale})`,
+  
+              transformOrigin: 'center center'
+  
+            }}
+  
+          >
  {/* Rack Roof */}
  <div className="h-8 bg-gray-700 dark:bg-gray-800 rounded-t-sm flex items-center justify-center border-b border-gray-600 shadow-xl z-10 shrink-0">
  <div className="w-1/3 h-2 bg-black/20 rounded-full"></div>
@@ -658,7 +704,7 @@ export default function RackPlanner() {
  </section>
 
  {/* RIGHT: Library Sidebar */}
- <aside className="w-80 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 flex flex-col shadow-2xl z-30 shrink-0">
+ <aside className="w-80 bg-white dark:bg-gray-900 border-l border-gray-200 dark:bg-gray-800 flex flex-col shadow-2xl z-30 shrink-0 overflow-hidden max-h-[calc(100vh-56px)]">
  
  {/* Tabs */}
  <div className="flex border-b border-gray-200 dark:border-gray-800">
