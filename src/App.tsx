@@ -1,17 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
  Server, 
- Box, 
- Cpu, 
- Wifi, 
- HardDrive, 
- Plus, 
  Search, 
- Settings, 
  Moon, 
  Sun, 
- Monitor, 
- Share2, 
  Trash2,
  Upload,
  GripVertical,
@@ -88,7 +80,16 @@ const PREDEFINED_MODULES: RackModule[] = [
 
 export default function RackPlanner() {
  // --- State ---
- const [isDarkMode, setIsDarkMode] = useState(true);
+ const [isDarkMode, setIsDarkMode] = useState(() => {
+   if (typeof window !== 'undefined') {
+     const saved = localStorage.getItem('darkMode');
+     if (saved !== null) {
+       return saved === 'true';
+     }
+     return window.matchMedia('(prefers-color-scheme: dark)').matches;
+   }
+   return true;
+ });
  const [isLoading, setIsLoading] = useState(true);
  
  // Rack Configuration
@@ -113,6 +114,20 @@ export default function RackPlanner() {
  const fileInputRef = useRef<HTMLInputElement>(null);
 
  // --- Persistence & Initialization ---
+
+ // Handle Dark Mode
+ useEffect(() => {
+   console.log('Dark mode state changed:', isDarkMode);
+   const root = window.document.documentElement;
+   if (isDarkMode) {
+     root.classList.add('dark');
+     console.log('Added dark class to html');
+   } else {
+     root.classList.remove('dark');
+     console.log('Removed dark class from html');
+   }
+   localStorage.setItem('darkMode', String(isDarkMode));
+ }, [isDarkMode]);
 
  // Load from LocalStorage on mount
  useEffect(() => {
@@ -446,7 +461,7 @@ export default function RackPlanner() {
    }
 
  return (
- <div className={`${isDarkMode ? 'dark' : ''} h-screen w-full overflow-hidden flex flex-col`}>
+ <div className="h-screen w-full overflow-hidden flex flex-col">
  <div className="flex-1 flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
  
  {/* Header */}

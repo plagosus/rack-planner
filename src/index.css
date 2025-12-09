@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 
 /* Optional: Add smooth scrolling and base styles */
 html, body {
