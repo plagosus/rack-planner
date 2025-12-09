@@ -1,73 +1,70 @@
-# React + TypeScript + Vite
+# Rack Planner
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Rack Planner is a web-based tool designed to help you visually plan and organize your server racks. Whether you're working with a standard 19-inch rack or a smaller 10-inch mini rack, our tool provides a simple and intuitive interface to design your setup.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   **Visual Rack Planning:** Drag and drop components into a visual representation of your rack.
+*   **Support for Multiple Rack Sizes:** Plan for both 19-inch and 10-inch racks.
+*   **Component Library:** A library of common and generic rack-mountable items is available to get you started.
+*   **Custom Items:** Create your own custom items for your 3D printed parts or DIY projects.
+*   **Work in Progress:** This is a working prototype with more features to come, including public profiles to share your rack setup with friends.
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-## Expanding the ESLint configuration
+### Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+To run this project, you will need to have the following installed on your machine:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+*   **Node.js:** Version 20.19.0 or higher (or 22.12.0 or higher)
+*   **npm:** Version 10.x or higher (or the version of npm that comes with your Node.js installation)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1.  Clone the repository to your local machine:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+    ```bash
+    git clone https://github.com/plagosus/rack-planner.git
+    ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+2.  Navigate to the project directory:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+    ```bash
+    cd rack-planner
+    ```
+
+3.  Install the dependencies:
+
+    ```bash
+    npm install
+    ```
+
+## Available Scripts
+
+In the project directory, you can run the following commands:
+
+### `npm run dev`
+
+Runs the app in the development mode.
+Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+
+The page will reload if you make edits. You will also see any lint errors in the console.
+
+### `npm run build`
+
+Builds the app for production to the `dist` folder.
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+### `npm run lint`
+
+Lints the project files for any code quality issues.
+
+### `npm run preview`
+
+Runs a local server to preview the production build. This is useful for testing the production build before deploying it.
+
+## Accessing the Application
+
+Once you have the development server running with `npm run dev`, you can access the application by opening your web browser and navigating to [http://localhost:5173](http://localhost:5173).
