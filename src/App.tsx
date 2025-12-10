@@ -41,7 +41,8 @@ const PREDEFINED_MODULES: RackModule[] = [
     { id: 'switch-24', name: '24-Port Switch', uSize: 1, type: 'networking', color: 'bg-cyan-950' },
 
     // Power
-    { id: 'pdu-1u', name: 'PDU 1U', uSize: 1, type: 'power', color: 'bg-rose-950' },
+    { id: 'pdu-1u', name: 'PDU 1U', uSize: 1, type: 'power', color: 'bg-gray-800' },
+    { id: 'ups-1u', name: 'UPS 1U', uSize: 1, type: 'power', color: 'bg-gray-800' },
 
     // Accessories
     {
@@ -588,7 +589,12 @@ export default function RackPlanner() {
                                                         className="absolute inset-x-0 inset-y-0 m-px z-10 cursor-grab active:cursor-grabbing shadow-sm group-hover:shadow-lg transition-all"
                                                     >
                                                         <div className="relative w-full h-full">
-                                                            <ModuleFace module={slot.module} />
+                                                            <ModuleFace
+                                                                module={slot.module}
+                                                                rackWidth={
+                                                                    rackSettings.widthStandard
+                                                                }
+                                                            />
 
                                                             {/* Hover Overlay Actions */}
                                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-end px-2 opacity-0 group-hover:opacity-100">
@@ -728,7 +734,12 @@ export default function RackPlanner() {
                                                         >
                                                             {/* Visual Preview */}
                                                             <div className="h-10 w-full rounded overflow-hidden relative">
-                                                                <ModuleFace module={module} />
+                                                                <ModuleFace
+                                                                    module={module}
+                                                                    rackWidth={
+                                                                        rackSettings.widthStandard
+                                                                    }
+                                                                />
                                                                 {/* Draggable Hint */}
                                                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
                                                                     <Move

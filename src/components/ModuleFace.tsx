@@ -1,4 +1,4 @@
-import { type RackModule } from '../types';
+import { type RackModule, type RackWidth } from '../types';
 import { NetworkingFace } from './module-faces/NetworkingFace';
 import { ServerFace } from './module-faces/ServerFace';
 import { StorageFace } from './module-faces/StorageFace';
@@ -7,9 +7,11 @@ import { VentFace } from './module-faces/VentFace';
 
 export const ModuleFace = ({
     module,
+    rackWidth,
     className = '',
 }: {
     module: RackModule;
+    rackWidth?: RackWidth;
     className?: string;
 }) => {
     const hasImage = !!module.image;
@@ -48,7 +50,9 @@ export const ModuleFace = ({
                         {module.type === 'storage' && <StorageFace />}
 
                         {/* Power: Switch/Outlets */}
-                        {module.type === 'power' && <PowerFace />}
+                        {module.type === 'power' && (
+                            <PowerFace module={module} rackWidth={rackWidth} />
+                        )}
 
                         {/* Vents: Horizontal Lines */}
                         {isVent && <VentFace />}
@@ -57,11 +61,13 @@ export const ModuleFace = ({
             )}
 
             {/* Bolt Holes Visuals - Adjusted for scale */}
-            <div className="absolute left-1 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+            <div className="absolute left-1 top-1/2 -translate-y-1/2 flex flex-col gap-3">
+                <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
                 <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
                 <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
             </div>
-            <div className="absolute right-1 top-1/2 -translate-y-1/2 flex flex-col gap-2">
+            <div className="absolute right-1 top-1/2 -translate-y-1/2 flex flex-col gap-3">
+                <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
                 <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
                 <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
             </div>
