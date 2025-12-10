@@ -1,8 +1,10 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
 @config "../tailwind.config.js";
 
 /* Optional: Add smooth scrolling and base styles */
-html, body {
-  height: 100%;
-  margin: 0;
+html,
+body {
+    height: 100%;
+    margin: 0;
 }

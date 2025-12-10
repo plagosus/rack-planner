@@ -4,11 +4,11 @@ Rack Planner is a web-based tool designed to help you visually plan and organize
 
 ## Features
 
-*   **Visual Rack Planning:** Drag and drop components into a visual representation of your rack.
-*   **Support for Multiple Rack Sizes:** Plan for both 19-inch and 10-inch racks.
-*   **Component Library:** A library of common and generic rack-mountable items is available to get you started.
-*   **Custom Items:** Create your own custom items for your 3D printed parts or DIY projects.
-*   **Work in Progress:** This is a working prototype with more features to come, including public profiles to share your rack setup with friends.
+- **Visual Rack Planning:** Drag and drop components into a visual representation of your rack.
+- **Support for Multiple Rack Sizes:** Plan for both 19-inch and 10-inch racks.
+- **Component Library:** A library of common and generic rack-mountable items is available to get you started.
+- **Custom Items:** Create your own custom items for your 3D printed parts or DIY projects.
+- **Work in Progress:** This is a working prototype with more features to come, including public profiles to share your rack setup with friends.
 
 ## Getting Started
 
@@ -18,8 +18,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 To run this project, you will need to have the following installed on your machine:
 
-*   **Node.js:** Version 20.19.0 or higher (or 22.12.0 or higher)
-*   **npm:** Version 10.x or higher (or the version of npm that comes with your Node.js installation)
+- **Node.js:** Version 20.19.0 or higher (or 22.12.0 or higher)
+- **npm:** Version 10.x or higher (or the version of npm that comes with your Node.js installation)
 
 ### Installation
 
