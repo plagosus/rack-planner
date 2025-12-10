@@ -47,7 +47,7 @@ export const ModuleFace = ({
                         {module.type === 'server' && <ServerFace />}
 
                         {/* Storage: Drive Arrays */}
-                        {module.type === 'storage' && <StorageFace />}
+                        {module.type === 'storage' && <StorageFace module={module} rackWidth={rackWidth} />}
 
                         {/* Power: Switch/Outlets */}
                         {module.type === 'power' && (

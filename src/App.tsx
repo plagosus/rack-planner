@@ -25,10 +25,9 @@ const PREDEFINED_MODULES: RackModule[] = [
     { id: 'server-4u', name: 'Server 4U', uSize: 4, type: 'server', color: 'bg-indigo-950' },
 
     // Storage
-    { id: 'nas-1u', name: 'NAS 1U', uSize: 1, type: 'storage', color: 'bg-amber-950' },
-    { id: 'nas-2u', name: 'NAS 2U', uSize: 2, type: 'storage', color: 'bg-amber-950' },
-    { id: 'nas-3u', name: 'NAS 3U', uSize: 3, type: 'storage', color: 'bg-amber-950' },
-    { id: 'nas-4u', name: '4U NAS Chassis', uSize: 4, type: 'storage', color: 'bg-amber-950' },
+    { id: 'nas-1u-35', name: '1U 3.5" HDD Bay', uSize: 1, type: 'storage', color: 'bg-gray-800' },
+    { id: 'nas-2u-35', name: '2U 3.5" HDD Bay', uSize: 2, type: 'storage', color: 'bg-gray-800' },
+    { id: 'nas-1u-25', name: '1U 2.5" SSD Bay', uSize: 1, type: 'storage', color: 'bg-gray-800' },
 
     // Networking
     {

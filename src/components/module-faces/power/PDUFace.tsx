@@ -1,7 +1,7 @@
 import type { RackWidth } from '../../../types';
 
 export const PDUFace = ({ rackWidth = '19inch' }: { rackWidth?: RackWidth }) => {
-    const outletCount = rackWidth === '10inch' ? 4 : 12;
+    const outletCount = rackWidth === '10inch' ? 4 : 10;
 
     return (
         <div className="flex items-center gap-6 w-full justify-start px-4 overflow-hidden">
