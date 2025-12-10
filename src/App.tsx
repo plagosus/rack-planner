@@ -27,7 +27,7 @@ const PREDEFINED_MODULES: RackModule[] = [
     // Storage
     { id: 'nas-1u-35', name: '1U 3.5" HDD Bay', uSize: 1, type: 'storage', color: 'bg-gray-800' },
     { id: 'nas-2u-35', name: '2U 3.5" HDD Bay', uSize: 2, type: 'storage', color: 'bg-gray-800' },
-    { id: 'nas-1u-25', name: '1U 2.5" SSD Bay', uSize: 1, type: 'storage', color: 'bg-gray-800' },
+    { id: 'nas-2u-25', name: '2U 2.5" SSD Bay', uSize: 2, type: 'storage', color: 'bg-gray-800' },
 
     // Networking
     {
