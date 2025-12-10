@@ -33,9 +33,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # The local folder to upload.
-          # Use './build/' for Create React App
-          # Use './dist/' for Vite
+          # Vite outputs to 'dist' by default
           local-dir: ./dist/
-          # The destination folder on your server
-          server-dir: ./public_html/
+          # server path for deployment
+          server-dir: ./
