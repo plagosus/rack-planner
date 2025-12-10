@@ -18,6 +18,7 @@ export const ModuleFace = ({
 
     // Simple visual helpers based on type/name
     const isVent = module.name.toLowerCase().includes('vent');
+    const holeCount = (module.uSize || 1) * 3;
 
     return (
         <div
@@ -61,15 +62,15 @@ export const ModuleFace = ({
             )}
 
             {/* Bolt Holes Visuals - Adjusted for scale */}
-            <div className="absolute left-1 top-1/2 -translate-y-1/2 flex flex-col gap-3">
-                <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
-                <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
-                <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
+            <div className="absolute left-1 top-1/2 -translate-y-1/2 flex flex-col gap-5">
+                {Array.from({ length: holeCount }).map((_, i) => (
+                    <div key={i} className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
+                ))}
             </div>
-            <div className="absolute right-1 top-1/2 -translate-y-1/2 flex flex-col gap-3">
-                <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
-                <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
-                <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
+            <div className="absolute right-1 top-1/2 -translate-y-1/2 flex flex-col gap-5">
+                {Array.from({ length: holeCount }).map((_, i) => (
+                    <div key={i} className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
+                ))}
             </div>
         </div>
     );
