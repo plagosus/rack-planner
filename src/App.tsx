@@ -542,11 +542,12 @@ export default function RackPlanner() {
                                                               <div
                                                                   key={i}
                                                                   style={{ height: U_PIXELS }}
-                                                                  className="flex items-center justify-center w-full"
+                                                                  className="relative flex items-center justify-center w-full"
                                                               >
                                                                   <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
                                                                       {slot.uPosition - i}
                                                                   </span>
+                                                                  <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
                                                               </div>
                                                           )
                                                       )
@@ -555,11 +556,12 @@ export default function RackPlanner() {
                                                           // Render single U number for empty slot
                                                           <div
                                                               style={{ height: U_PIXELS }}
-                                                              className="flex items-center justify-center w-full"
+                                                              className="relative flex items-center justify-center w-full"
                                                           >
                                                               <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
                                                                   {slot.uPosition}
                                                               </span>
+                                                              <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
                                                           </div>
                                                       )}
                                             </div>
@@ -690,11 +692,12 @@ export default function RackPlanner() {
                                                               <div
                                                                   key={i}
                                                                   style={{ height: U_PIXELS }}
-                                                                  className="flex items-center justify-center w-full"
+                                                                  className="relative flex items-center justify-center w-full"
                                                               >
                                                                   <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
                                                                       {slot.uPosition - i}
                                                                   </span>
+                                                                  <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
                                                               </div>
                                                           )
                                                       )
@@ -702,11 +705,12 @@ export default function RackPlanner() {
                                                       !isModulePart && (
                                                           <div
                                                               style={{ height: U_PIXELS }}
-                                                              className="flex items-center justify-center w-full"
+                                                              className="relative flex items-center justify-center w-full"
                                                           >
                                                               <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
                                                                   {slot.uPosition}
                                                               </span>
+                                                              <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
                                                           </div>
                                                       )}
                                             </div>
