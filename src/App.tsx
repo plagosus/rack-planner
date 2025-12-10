@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Server, Search, Moon, Sun, Trash2, Upload, GripVertical, Move } from 'lucide-react';
+import type { ModuleType, RackModule, RackSettings, RackSlot, RackWidth } from './types';
+import { ModuleFace } from './components/ModuleFace';
 
 // --- Constants for Proportional Rendering ---
 // Scaled up by 50% (Original was 60px/U)
@@ -9,48 +11,24 @@ const WIDTH_19_INCH = Math.round(19 * PIXELS_PER_INCH);
 const WIDTH_10_INCH = Math.round(10 * PIXELS_PER_INCH);
 const RAIL_WIDTH = Math.round(0.625 * PIXELS_PER_INCH);
 
-// --- Types ---
-type ModuleType = 'server' | 'networking' | 'storage' | 'power' | 'accessory' | 'generic';
-type RackWidth = '19inch' | '10inch';
-
-interface RackModule {
-    id: string;
-    name: string;
-    uSize: number;
-    type: ModuleType;
-    image?: string; // Data URL for custom image
-    color?: string; // Tailwind color class or hex
-}
-
-interface RackSlot {
-    uPosition: number;
-    moduleId: string | null;
-    module?: RackModule;
-}
-
-interface RackSettings {
-    heightU: number;
-    widthStandard: RackWidth;
-}
-
 // --- Mock Data ---
 const PREDEFINED_MODULES: RackModule[] = [
     // Generics
-    { id: 'gen-1u', name: 'Generic 1U', uSize: 1, type: 'generic', color: 'bg-gray-600' },
-    { id: 'gen-2u', name: 'Generic 2U', uSize: 2, type: 'generic', color: 'bg-gray-600' },
-    { id: 'gen-3u', name: 'Generic 3U', uSize: 3, type: 'generic', color: 'bg-gray-600' },
+    { id: 'gen-1u', name: 'Generic 1U', uSize: 1, type: 'generic', color: 'bg-gray-700' },
+    { id: 'gen-2u', name: 'Generic 2U', uSize: 2, type: 'generic', color: 'bg-gray-700' },
+    { id: 'gen-3u', name: 'Generic 3U', uSize: 3, type: 'generic', color: 'bg-gray-700' },
 
     // Servers
-    { id: 'server-1u', name: 'Server 1U', uSize: 1, type: 'server', color: 'bg-gray-800' },
-    { id: 'server-2u', name: 'Server 2U', uSize: 2, type: 'server', color: 'bg-gray-800' },
-    { id: 'server-3u', name: 'Server 3U', uSize: 3, type: 'server', color: 'bg-gray-800' },
-    { id: 'server-4u', name: 'Server 4U', uSize: 4, type: 'server', color: 'bg-gray-800' },
+    { id: 'server-1u', name: 'Server 1U', uSize: 1, type: 'server', color: 'bg-indigo-950' },
+    { id: 'server-2u', name: 'Server 2U', uSize: 2, type: 'server', color: 'bg-indigo-950' },
+    { id: 'server-3u', name: 'Server 3U', uSize: 3, type: 'server', color: 'bg-indigo-950' },
+    { id: 'server-4u', name: 'Server 4U', uSize: 4, type: 'server', color: 'bg-indigo-950' },
 
     // Storage
-    { id: 'nas-1u', name: 'NAS 1U', uSize: 1, type: 'storage', color: 'bg-gray-700' },
-    { id: 'nas-2u', name: 'NAS 2U', uSize: 2, type: 'storage', color: 'bg-gray-700' },
-    { id: 'nas-3u', name: 'NAS 3U', uSize: 3, type: 'storage', color: 'bg-gray-700' },
-    { id: 'nas-4u', name: '4U NAS Chassis', uSize: 4, type: 'storage', color: 'bg-gray-700' },
+    { id: 'nas-1u', name: 'NAS 1U', uSize: 1, type: 'storage', color: 'bg-amber-950' },
+    { id: 'nas-2u', name: 'NAS 2U', uSize: 2, type: 'storage', color: 'bg-amber-950' },
+    { id: 'nas-3u', name: 'NAS 3U', uSize: 3, type: 'storage', color: 'bg-amber-950' },
+    { id: 'nas-4u', name: '4U NAS Chassis', uSize: 4, type: 'storage', color: 'bg-amber-950' },
 
     // Networking
     {
@@ -58,32 +36,38 @@ const PREDEFINED_MODULES: RackModule[] = [
         name: 'UniFi Dream Machine',
         uSize: 1,
         type: 'networking',
-        color: 'bg-gray-200',
+        color: 'bg-slate-300',
     },
-    { id: 'switch-24', name: '24-Port Switch', uSize: 1, type: 'networking', color: 'bg-gray-800' },
+    { id: 'switch-24', name: '24-Port Switch', uSize: 1, type: 'networking', color: 'bg-cyan-950' },
 
     // Power
-    { id: 'pdu-1u', name: 'PDU 1U', uSize: 1, type: 'power', color: 'bg-black' },
+    { id: 'pdu-1u', name: 'PDU 1U', uSize: 1, type: 'power', color: 'bg-rose-950' },
 
     // Accessories
-    { id: 'patch-panel', name: 'Patch Panel', uSize: 1, type: 'accessory', color: 'bg-black' },
+    {
+        id: 'patch-panel',
+        name: 'Patch Panel',
+        uSize: 1,
+        type: 'accessory',
+        color: 'bg-neutral-900',
+    },
     {
         id: 'cable-man-1u',
         name: 'Cable Management 1U',
         uSize: 1,
         type: 'accessory',
-        color: 'bg-gray-900',
+        color: 'bg-neutral-800',
     },
-    { id: 'vent-1u', name: 'Vent 1U', uSize: 1, type: 'accessory', color: 'bg-gray-600' },
-    { id: 'vent-2u', name: 'Vent 2U', uSize: 2, type: 'accessory', color: 'bg-gray-600' },
-    { id: 'vent-3u', name: 'Vent 3U', uSize: 3, type: 'accessory', color: 'bg-gray-600' },
-    { id: 'shelf', name: 'Shelf', uSize: 1, type: 'accessory', color: 'bg-gray-800' },
+    { id: 'vent-1u', name: 'Vent 1U', uSize: 1, type: 'accessory', color: 'bg-slate-700' },
+    { id: 'vent-2u', name: 'Vent 2U', uSize: 2, type: 'accessory', color: 'bg-slate-700' },
+    { id: 'vent-3u', name: 'Vent 3U', uSize: 3, type: 'accessory', color: 'bg-slate-700' },
+    { id: 'shelf', name: 'Shelf', uSize: 1, type: 'accessory', color: 'bg-slate-800' },
     {
         id: 'rpi-mount',
         name: 'Raspberry Pi Mount',
         uSize: 1,
         type: 'accessory',
-        color: 'bg-green-800',
+        color: 'bg-emerald-900',
     },
 ];
 
@@ -413,124 +397,6 @@ export default function RackPlanner() {
     };
 
     // --- Visual Components ---
-
-    const ModuleFace = ({ module, className = '' }: { module: RackModule; className?: string }) => {
-        const hasImage = !!module.image;
-
-        // Simple visual helpers based on type/name
-        const isVent = module.name.toLowerCase().includes('vent');
-
-        return (
-            <div
-                className={`w-full h-full relative overflow-hidden flex items-center justify-center border-y border-white/10 shadow-inner ${module.color || 'bg-gray-700'} ${className}`}
-                style={
-                    hasImage
-                        ? {
-                              backgroundImage: `url(${module.image})`,
-                              backgroundSize: 'cover',
-                              backgroundPosition: 'center',
-                          }
-                        : {}
-                }
-            >
-                {!hasImage && (
-                    <div className="flex flex-col items-center opacity-80 pointer-events-none w-full px-4">
-                        <span className="font-mono text-xs uppercase tracking-widest text-white/50 mb-1">
-                            {module.name.substring(0, 18)}
-                        </span>
-
-                        {/* Visual Features based on Type */}
-                        <div className="flex gap-2 w-full justify-center">
-                            {/* Networking: Ports */}
-                            {module.type === 'networking' && (
-                                <div className="flex gap-1">
-                                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                                        <div
-                                            key={i}
-                                            className="w-3 h-3 bg-black/80 rounded-sm border border-gray-600 shadow-inner"
-                                        ></div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {/* Server: Indicators or Drive Bays */}
-                            {module.type === 'server' && (
-                                <div className="flex items-center gap-2">
-                                    <div className="flex flex-col gap-0.5">
-                                        <div className="w-1 h-1 rounded-full bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.5)]"></div>
-                                        <div className="w-1 h-1 rounded-full bg-blue-500"></div>
-                                    </div>
-                                    <div className="w-20 h-1.5 bg-black/50 rounded-full"></div>
-                                    <div className="flex gap-0.5">
-                                        {[1, 2, 3].map((i) => (
-                                            <div
-                                                key={i}
-                                                className="w-4 h-6 border border-black/30 bg-black/10 rounded-sm"
-                                            ></div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Storage: Drive Arrays */}
-                            {module.type === 'storage' && (
-                                <div className="flex gap-0.5">
-                                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                                        <div
-                                            key={i}
-                                            className="w-3 h-full min-h-[12px] border border-black/40 bg-black/20 rounded-sm flex flex-col items-center pt-0.5"
-                                        >
-                                            <div className="w-1.5 h-0.5 bg-green-900 mb-0.5"></div>
-                                            <div className="w-full h-px bg-black/30 mt-auto mb-1"></div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {/* Power: Switch/Outlets */}
-                            {module.type === 'power' && (
-                                <div className="flex items-center gap-4 w-full justify-between px-2">
-                                    <div className="w-4 h-3 bg-red-800 border border-red-900 rounded-sm flex items-center justify-center">
-                                        <div className="w-2 h-0.5 bg-red-400"></div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        {[1, 2, 3].map((i) => (
-                                            <div
-                                                key={i}
-                                                className="w-4 h-4 bg-black rounded-full border border-gray-700"
-                                            ></div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Vents: Horizontal Lines */}
-                            {isVent && (
-                                <div className="flex flex-col gap-1 w-full opacity-30">
-                                    {[1, 2, 3].map((i) => (
-                                        <div
-                                            key={i}
-                                            className="w-full h-0.5 bg-black rounded-full"
-                                        ></div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
-
-                {/* Bolt Holes Visuals - Adjusted for scale */}
-                <div className="absolute left-1 top-1/2 -translate-y-1/2 flex flex-col gap-2">
-                    <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
-                    <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
-                </div>
-                <div className="absolute right-1 top-1/2 -translate-y-1/2 flex flex-col gap-2">
-                    <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
-                    <div className="w-2 h-2 rounded-full bg-black/50 shadow-inner"></div>
-                </div>
-            </div>
-        );
-    };
 
     if (isLoading) {
         return (
