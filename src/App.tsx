@@ -11,6 +11,17 @@ const WIDTH_19_INCH = Math.round(19 * PIXELS_PER_INCH);
 const WIDTH_10_INCH = Math.round(10 * PIXELS_PER_INCH);
 const RAIL_WIDTH = Math.round(0.625 * PIXELS_PER_INCH);
 
+const COLOR_OPTIONS = [
+    { label: 'Gray (Dark)', value: 'bg-gray-700' },
+    { label: 'Gray (Darker)', value: 'bg-gray-800' },
+    { label: 'Indigo (Deep)', value: 'bg-indigo-950' },
+    { label: 'Blue (Slate)', value: 'bg-slate-700' },
+    { label: 'Cyan (Dark)', value: 'bg-cyan-950' },
+    { label: 'Black (Neutral)', value: 'bg-neutral-900' },
+    { label: 'White/Silver', value: 'bg-slate-300' },
+    { label: 'Emerald', value: 'bg-emerald-900' },
+];
+
 // --- Mock Data ---
 const PREDEFINED_MODULES: RackModule[] = [
     // Generics
@@ -108,6 +119,7 @@ export default function RackPlanner() {
     const [customName, setCustomName] = useState('');
     const [customU, setCustomU] = useState(1);
     const [customType, setCustomType] = useState<ModuleType>('generic');
+    const [customColor, setCustomColor] = useState(COLOR_OPTIONS[0].value);
     const [customImage, setCustomImage] = useState<string | null>(null);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -348,7 +360,7 @@ export default function RackPlanner() {
             name: customName,
             uSize: customU,
             type: customType,
-            color: 'bg-indigo-900',
+            color: customColor,
             image: customImage || undefined,
         };
         setCustomLibrary([...customLibrary, newMod]);
@@ -902,6 +914,28 @@ export default function RackPlanner() {
                                             <option value="storage">Storage</option>
                                             <option value="power">Power</option>
                                             <option value="accessory">Accessory</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label className="text-xs font-medium text-gray-500">
+                                        Color
+                                    </label>
+                                    <div className="flex items-center gap-2">
+                                        <div
+                                            className={`w-8 h-8 rounded border border-gray-300 dark:border-gray-600 ${customColor}`}
+                                        ></div>
+                                        <select
+                                            value={customColor}
+                                            onChange={(e) => setCustomColor(e.target.value)}
+                                            className="flex-1 bg-gray-100 dark:bg-gray-800 border-none rounded p-2 text-sm"
+                                        >
+                                            {COLOR_OPTIONS.map((opt) => (
+                                                <option key={opt.value} value={opt.value}>
+                                                    {opt.label}
+                                                </option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>
