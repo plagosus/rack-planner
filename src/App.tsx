@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {Server, Search, Moon, Sun, Trash2, Upload, GripVertical, Move} from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Server, Search, Moon, Sun, Trash2, Upload, GripVertical, Move } from 'lucide-react';
 
 // --- Constants for Proportional Rendering ---
 // Scaled up by 50% (Original was 60px/U)
@@ -36,21 +36,21 @@ interface RackSettings {
 // --- Mock Data ---
 const PREDEFINED_MODULES: RackModule[] = [
     // Generics
-    {id: 'gen-1u', name: 'Generic 1U', uSize: 1, type: 'generic', color: 'bg-gray-600'},
-    {id: 'gen-2u', name: 'Generic 2U', uSize: 2, type: 'generic', color: 'bg-gray-600'},
-    {id: 'gen-3u', name: 'Generic 3U', uSize: 3, type: 'generic', color: 'bg-gray-600'},
+    { id: 'gen-1u', name: 'Generic 1U', uSize: 1, type: 'generic', color: 'bg-gray-600' },
+    { id: 'gen-2u', name: 'Generic 2U', uSize: 2, type: 'generic', color: 'bg-gray-600' },
+    { id: 'gen-3u', name: 'Generic 3U', uSize: 3, type: 'generic', color: 'bg-gray-600' },
 
     // Servers
-    {id: 'server-1u', name: 'Server 1U', uSize: 1, type: 'server', color: 'bg-gray-800'},
-    {id: 'server-2u', name: 'Server 2U', uSize: 2, type: 'server', color: 'bg-gray-800'},
-    {id: 'server-3u', name: 'Server 3U', uSize: 3, type: 'server', color: 'bg-gray-800'},
-    {id: 'server-4u', name: 'Server 4U', uSize: 4, type: 'server', color: 'bg-gray-800'},
+    { id: 'server-1u', name: 'Server 1U', uSize: 1, type: 'server', color: 'bg-gray-800' },
+    { id: 'server-2u', name: 'Server 2U', uSize: 2, type: 'server', color: 'bg-gray-800' },
+    { id: 'server-3u', name: 'Server 3U', uSize: 3, type: 'server', color: 'bg-gray-800' },
+    { id: 'server-4u', name: 'Server 4U', uSize: 4, type: 'server', color: 'bg-gray-800' },
 
     // Storage
-    {id: 'nas-1u', name: 'NAS 1U', uSize: 1, type: 'storage', color: 'bg-gray-700'},
-    {id: 'nas-2u', name: 'NAS 2U', uSize: 2, type: 'storage', color: 'bg-gray-700'},
-    {id: 'nas-3u', name: 'NAS 3U', uSize: 3, type: 'storage', color: 'bg-gray-700'},
-    {id: 'nas-4u', name: '4U NAS Chassis', uSize: 4, type: 'storage', color: 'bg-gray-700'},
+    { id: 'nas-1u', name: 'NAS 1U', uSize: 1, type: 'storage', color: 'bg-gray-700' },
+    { id: 'nas-2u', name: 'NAS 2U', uSize: 2, type: 'storage', color: 'bg-gray-700' },
+    { id: 'nas-3u', name: 'NAS 3U', uSize: 3, type: 'storage', color: 'bg-gray-700' },
+    { id: 'nas-4u', name: '4U NAS Chassis', uSize: 4, type: 'storage', color: 'bg-gray-700' },
 
     // Networking
     {
@@ -60,13 +60,13 @@ const PREDEFINED_MODULES: RackModule[] = [
         type: 'networking',
         color: 'bg-gray-200',
     },
-    {id: 'switch-24', name: '24-Port Switch', uSize: 1, type: 'networking', color: 'bg-gray-800'},
+    { id: 'switch-24', name: '24-Port Switch', uSize: 1, type: 'networking', color: 'bg-gray-800' },
 
     // Power
-    {id: 'pdu-1u', name: 'PDU 1U', uSize: 1, type: 'power', color: 'bg-black'},
+    { id: 'pdu-1u', name: 'PDU 1U', uSize: 1, type: 'power', color: 'bg-black' },
 
     // Accessories
-    {id: 'patch-panel', name: 'Patch Panel', uSize: 1, type: 'accessory', color: 'bg-black'},
+    { id: 'patch-panel', name: 'Patch Panel', uSize: 1, type: 'accessory', color: 'bg-black' },
     {
         id: 'cable-man-1u',
         name: 'Cable Management 1U',
@@ -74,10 +74,10 @@ const PREDEFINED_MODULES: RackModule[] = [
         type: 'accessory',
         color: 'bg-gray-900',
     },
-    {id: 'vent-1u', name: 'Vent 1U', uSize: 1, type: 'accessory', color: 'bg-gray-600'},
-    {id: 'vent-2u', name: 'Vent 2U', uSize: 2, type: 'accessory', color: 'bg-gray-600'},
-    {id: 'vent-3u', name: 'Vent 3U', uSize: 3, type: 'accessory', color: 'bg-gray-600'},
-    {id: 'shelf', name: 'Shelf', uSize: 1, type: 'accessory', color: 'bg-gray-800'},
+    { id: 'vent-1u', name: 'Vent 1U', uSize: 1, type: 'accessory', color: 'bg-gray-600' },
+    { id: 'vent-2u', name: 'Vent 2U', uSize: 2, type: 'accessory', color: 'bg-gray-600' },
+    { id: 'vent-3u', name: 'Vent 3U', uSize: 3, type: 'accessory', color: 'bg-gray-600' },
+    { id: 'shelf', name: 'Shelf', uSize: 1, type: 'accessory', color: 'bg-gray-800' },
     {
         id: 'rpi-mount',
         name: 'Raspberry Pi Mount',
@@ -225,7 +225,7 @@ export default function RackPlanner() {
 
     // Initializer
     const initializeRack = (size: number) => {
-        const slots: RackSlot[] = Array.from({length: size}, (_, i) => ({
+        const slots: RackSlot[] = Array.from({ length: size }, (_, i) => ({
             uPosition: size - i,
             moduleId: null,
         }));
@@ -244,7 +244,7 @@ export default function RackPlanner() {
         if (newHeight > currentHeight) {
             // Growing: Add slots to the TOP (beginning of array)
             const uDiff = newHeight - currentHeight;
-            const newSlots: RackSlot[] = Array.from({length: uDiff}, (_, i) => ({
+            const newSlots: RackSlot[] = Array.from({ length: uDiff }, (_, i) => ({
                 uPosition: newHeight - i, // New higher U numbers
                 moduleId: null,
             }));
@@ -264,14 +264,14 @@ export default function RackPlanner() {
             updatedSlots = rackSlots.slice(uDiff);
         }
 
-        setRackSettings((prev) => ({...prev, heightU: newHeight}));
+        setRackSettings((prev) => ({ ...prev, heightU: newHeight }));
         setRackSlots(updatedSlots);
     };
 
     // --- Drag and Drop Handlers ---
 
     const handleDragStart = (e: React.DragEvent, module: RackModule, originalIndex?: number) => {
-        setDraggedItem({module, originalIndex});
+        setDraggedItem({ module, originalIndex });
         e.dataTransfer.effectAllowed = 'move';
     };
 
@@ -287,7 +287,7 @@ export default function RackPlanner() {
 
         if (!draggedItem) return;
 
-        const {module, originalIndex} = draggedItem;
+        const { module, originalIndex } = draggedItem;
         const slotsNeeded = module.uSize;
 
         // Boundary Check
@@ -306,7 +306,7 @@ export default function RackPlanner() {
             if (originalId) {
                 for (let i = 0; i < newSlots.length; i++) {
                     if (newSlots[i].moduleId === originalId) {
-                        newSlots[i] = {...newSlots[i], moduleId: null, module: undefined};
+                        newSlots[i] = { ...newSlots[i], moduleId: null, module: undefined };
                     }
                 }
             }
@@ -414,7 +414,7 @@ export default function RackPlanner() {
 
     // --- Visual Components ---
 
-    const ModuleFace = ({module, className = ''}: { module: RackModule; className?: string }) => {
+    const ModuleFace = ({ module, className = '' }: { module: RackModule; className?: string }) => {
         const hasImage = !!module.image;
 
         // Simple visual helpers based on type/name
@@ -426,10 +426,10 @@ export default function RackPlanner() {
                 style={
                     hasImage
                         ? {
-                            backgroundImage: `url(${module.image})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                        }
+                              backgroundImage: `url(${module.image})`,
+                              backgroundSize: 'cover',
+                              backgroundPosition: 'center',
+                          }
                         : {}
                 }
             >
@@ -457,8 +457,7 @@ export default function RackPlanner() {
                             {module.type === 'server' && (
                                 <div className="flex items-center gap-2">
                                     <div className="flex flex-col gap-0.5">
-                                        <div
-                                            className="w-1 h-1 rounded-full bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.5)]"></div>
+                                        <div className="w-1 h-1 rounded-full bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.5)]"></div>
                                         <div className="w-1 h-1 rounded-full bg-blue-500"></div>
                                     </div>
                                     <div className="w-20 h-1.5 bg-black/50 rounded-full"></div>
@@ -491,8 +490,7 @@ export default function RackPlanner() {
                             {/* Power: Switch/Outlets */}
                             {module.type === 'power' && (
                                 <div className="flex items-center gap-4 w-full justify-between px-2">
-                                    <div
-                                        className="w-4 h-3 bg-red-800 border border-red-900 rounded-sm flex items-center justify-center">
+                                    <div className="w-4 h-3 bg-red-800 border border-red-900 rounded-sm flex items-center justify-center">
                                         <div className="w-2 h-0.5 bg-red-400"></div>
                                     </div>
                                     <div className="flex gap-2">
@@ -544,14 +542,12 @@ export default function RackPlanner() {
 
     return (
         <div className="h-screen w-full overflow-hidden flex flex-col">
-            <div
-                className="flex-1 flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
+            <div className="flex-1 flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
                 {/* Header */}
-                <header
-                    className="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 flex items-center justify-between px-4 z-20 shrink-0">
+                <header className="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 flex items-center justify-between px-4 z-20 shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="p-1.5 bg-indigo-600 rounded-md">
-                            <Server className="text-white" size={20}/>
+                            <Server className="text-white" size={20} />
                         </div>
                         <h1 className="font-bold tracking-tight">
                             RackPlanner{' '}
@@ -594,7 +590,7 @@ export default function RackPlanner() {
                             onClick={() => setIsDarkMode(!isDarkMode)}
                             className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 text-yellow-500 dark:text-indigo-400"
                         >
-                            {isDarkMode ? <Moon size={18}/> : <Sun size={18}/>}
+                            {isDarkMode ? <Moon size={18} /> : <Sun size={18} />}
                         </button>
                     </div>
                 </header>
@@ -622,8 +618,7 @@ export default function RackPlanner() {
                             }}
                         >
                             {/* Rack Roof */}
-                            <div
-                                className="h-8 bg-gray-700 dark:bg-gray-800 rounded-t-sm flex items-center justify-center border-b border-gray-600 shadow-xl z-10 shrink-0">
+                            <div className="h-8 bg-gray-700 dark:bg-gray-800 rounded-t-sm flex items-center justify-center border-b border-gray-600 shadow-xl z-10 shrink-0">
                                 <div className="w-1/3 h-2 bg-black/20 rounded-full"></div>
                             </div>
 
@@ -660,7 +655,7 @@ export default function RackPlanner() {
                                             className={`relative flex w-full transition-colors ${
                                                 isDragTarget ? 'bg-indigo-500/20 z-20' : ''
                                             }`}
-                                            style={{height: isModulePart ? 0 : moduleHeight}} // Collapse covered slots
+                                            style={{ height: isModulePart ? 0 : moduleHeight }} // Collapse covered slots
                                         >
                                             {/* Left Rail Indicators */}
                                             <div
@@ -676,33 +671,31 @@ export default function RackPlanner() {
  */}
                                                 {isModuleStart && slot.module
                                                     ? // Render multiple U numbers for multi-U items
-                                                    Array.from({length: slot.module.uSize}).map(
-                                                        (_, i) => (
-                                                            <div
-                                                                key={i}
-                                                                style={{height: U_PIXELS}}
-                                                                className="flex items-center justify-center w-full"
-                                                            >
-                                                                  <span
-                                                                      className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
+                                                      Array.from({ length: slot.module.uSize }).map(
+                                                          (_, i) => (
+                                                              <div
+                                                                  key={i}
+                                                                  style={{ height: U_PIXELS }}
+                                                                  className="flex items-center justify-center w-full"
+                                                              >
+                                                                  <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
                                                                       {slot.uPosition - i}
                                                                   </span>
-                                                            </div>
-                                                        )
-                                                    )
+                                                              </div>
+                                                          )
+                                                      )
                                                     : !isOccupied &&
-                                                    !isModulePart && (
-                                                        // Render single U number for empty slot
-                                                        <div
-                                                            style={{height: U_PIXELS}}
-                                                            className="flex items-center justify-center w-full"
-                                                        >
-                                                              <span
-                                                                  className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
+                                                      !isModulePart && (
+                                                          // Render single U number for empty slot
+                                                          <div
+                                                              style={{ height: U_PIXELS }}
+                                                              className="flex items-center justify-center w-full"
+                                                          >
+                                                              <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
                                                                   {slot.uPosition}
                                                               </span>
-                                                        </div>
-                                                    )}
+                                                          </div>
+                                                      )}
                                             </div>
 
                                             {/* Slot Content */}
@@ -711,10 +704,9 @@ export default function RackPlanner() {
                                                 {!isOccupied && !isModulePart && (
                                                     <div
                                                         className="w-full border-b border-gray-400/20 dark:border-white/5 flex items-center justify-center"
-                                                        style={{height: U_PIXELS}}
+                                                        style={{ height: U_PIXELS }}
                                                     >
-                                                        <div
-                                                            className="text-gray-400/20 dark:text-white/10 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity select-none pointer-events-none">
+                                                        <div className="text-gray-400/20 dark:text-white/10 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity select-none pointer-events-none">
                                                             Empty {slot.uPosition}U
                                                         </div>
                                                     </div>
@@ -730,13 +722,11 @@ export default function RackPlanner() {
                                                         className="absolute inset-x-0 inset-y-0 m-px z-10 cursor-grab active:cursor-grabbing shadow-sm group-hover:shadow-lg transition-all"
                                                     >
                                                         <div className="relative w-full h-full">
-                                                            <ModuleFace module={slot.module}/>
+                                                            <ModuleFace module={slot.module} />
 
                                                             {/* Hover Overlay Actions */}
-                                                            <div
-                                                                className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-end px-2 opacity-0 group-hover:opacity-100">
-                                                                <div
-                                                                    className="bg-black/80 text-white text-[10px] px-2 py-1 rounded shadow-lg backdrop-blur-md flex items-center gap-2">
+                                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-end px-2 opacity-0 group-hover:opacity-100">
+                                                                <div className="bg-black/80 text-white text-[10px] px-2 py-1 rounded shadow-lg backdrop-blur-md flex items-center gap-2">
                                                                     <GripVertical
                                                                         size={12}
                                                                         className="text-gray-400"
@@ -744,8 +734,7 @@ export default function RackPlanner() {
                                                                     <span className="font-semibold">
                                                                         {slot.module.name}
                                                                     </span>
-                                                                    <span
-                                                                        className="text-gray-400 border-l border-gray-600 pl-2 ml-1">
+                                                                    <span className="text-gray-400 border-l border-gray-600 pl-2 ml-1">
                                                                         {slot.module.uSize}U
                                                                     </span>
                                                                     <button
@@ -768,7 +757,7 @@ export default function RackPlanner() {
                                                                                     newSlots[i] = {
                                                                                         ...newSlots[
                                                                                             i
-                                                                                            ],
+                                                                                        ],
                                                                                         moduleId:
                                                                                             null,
                                                                                         module: undefined,
@@ -779,7 +768,7 @@ export default function RackPlanner() {
                                                                         }}
                                                                         className="ml-2 p-1 hover:text-red-400 transition-colors"
                                                                     >
-                                                                        <Trash2 size={12}/>
+                                                                        <Trash2 size={12} />
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -789,10 +778,8 @@ export default function RackPlanner() {
 
                                                 {/* Drop Zone Indicator */}
                                                 {isDragTarget && (
-                                                    <div
-                                                        className="absolute inset-0 border-2 border-indigo-500 bg-indigo-500/10 z-30 pointer-events-none flex items-center justify-center">
-                                                        <span
-                                                            className="text-xs font-bold text-indigo-500 bg-white dark:bg-gray-900 px-2 py-1 rounded shadow">
+                                                    <div className="absolute inset-0 border-2 border-indigo-500 bg-indigo-500/10 z-30 pointer-events-none flex items-center justify-center">
+                                                        <span className="text-xs font-bold text-indigo-500 bg-white dark:bg-gray-900 px-2 py-1 rounded shadow">
                                                             Drop Here ({draggedItem?.module.uSize}U)
                                                         </span>
                                                     </div>
@@ -819,8 +806,7 @@ export default function RackPlanner() {
                     </section>
 
                     {/* RIGHT: Library Sidebar */}
-                    <aside
-                        className="w-80 bg-white dark:bg-gray-900 border-l border-gray-200 dark:bg-gray-800 flex flex-col shadow-2xl z-30 shrink-0 overflow-hidden max-h-[calc(100vh-56px)]">
+                    <aside className="w-80 bg-white dark:bg-gray-900 border-l border-gray-200 flex flex-col shadow-2xl z-30 shrink-0 overflow-hidden max-h-[calc(100vh-56px)]">
                         {/* Tabs */}
                         <div className="flex border-b border-gray-200 dark:border-gray-800">
                             <button
@@ -875,12 +861,10 @@ export default function RackPlanner() {
                                                             className="group bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-2 cursor-grab hover:border-indigo-500 hover:shadow-md transition-all flex flex-col gap-2"
                                                         >
                                                             {/* Visual Preview */}
-                                                            <div
-                                                                className="h-10 w-full rounded overflow-hidden relative">
-                                                                <ModuleFace module={module}/>
+                                                            <div className="h-10 w-full rounded overflow-hidden relative">
+                                                                <ModuleFace module={module} />
                                                                 {/* Draggable Hint */}
-                                                                <div
-                                                                    className="absolute inset-0 bg-black/0 group-hover:bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
                                                                     <Move
                                                                         className="text-white drop-shadow-md"
                                                                         size={16}
@@ -890,8 +874,7 @@ export default function RackPlanner() {
 
                                                             {/* Meta - Simplified */}
                                                             <div className="flex items-center justify-between px-1">
-                                                                <div
-                                                                    className="text-[10px] text-gray-700 dark:text-gray-300 font-medium leading-tight">
+                                                                <div className="text-[10px] text-gray-700 dark:text-gray-300 font-medium leading-tight">
                                                                     {module.name}
                                                                 </div>
                                                                 {module.id.startsWith(
@@ -906,7 +889,7 @@ export default function RackPlanner() {
                                                                         }
                                                                         className="text-gray-400 hover:text-red-500"
                                                                     >
-                                                                        <Trash2 size={12}/>
+                                                                        <Trash2 size={12} />
                                                                     </button>
                                                                 )}
                                                             </div>
@@ -998,7 +981,7 @@ export default function RackPlanner() {
                                             />
                                         ) : (
                                             <>
-                                                <Upload size={20} className="mb-1"/>
+                                                <Upload size={20} className="mb-1" />
                                                 <span className="text-[10px]">Upload Image</span>
                                             </>
                                         )}
@@ -1030,7 +1013,7 @@ export default function RackPlanner() {
                                 onClick={clearRack}
                                 className="flex items-center justify-center gap-2 w-full py-1.5 text-red-500 hover:bg-red-500/10 rounded text-xs font-medium transition-colors"
                             >
-                                <Trash2 size={12}/> Clear Rack
+                                <Trash2 size={12} /> Clear Rack
                             </button>
                         </div>
                     </aside>
