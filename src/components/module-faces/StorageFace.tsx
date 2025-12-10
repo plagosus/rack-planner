@@ -1,4 +1,5 @@
 import type { RackModule, RackWidth } from '../../types';
+import type { JSX } from 'react';
 
 const DriveBay35 = ({ className = '' }: { className?: string }) => (
     <div
@@ -39,6 +40,10 @@ export const StorageFace = ({
     module: RackModule;
     rackWidth?: RackWidth;
 }) => {
+    let driveCount = 0;
+    let DriveComponent: ({ className }: { className?: string }) => JSX.Element = DriveBay35;
+    let driveClassName = '';
+
     if (module.id === 'nas-1u-35') {
         const drivesPerRow = rackWidth === '10inch' ? 2 : 4;
         return (
@@ -88,6 +93,11 @@ export const StorageFace = ({
                 </div>
             </div>
         );
+    } else if (module.id === 'nas-1u-25') {
+        driveCount = 8;
+        DriveComponent = DriveBay25;
+        // For 2U 2.5", 8 bays will be smaller.
+        driveClassName = 'w-1/8'; // Roughly 8 drives across
     }
 
     if (driveCount === 0) {
