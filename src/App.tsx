@@ -4,7 +4,6 @@ import type { ModuleType, RackModule, RackSettings, RackSlot, RackWidth } from '
 import { ModuleFace } from './components/ModuleFace';
 
 // --- Constants for Proportional Rendering ---
-// Scaled up by 50% (Original was 60px/U)
 const U_PIXELS = 90;
 const PIXELS_PER_INCH = U_PIXELS / 1.75;
 const WIDTH_19_INCH = Math.round(19 * PIXELS_PER_INCH);
@@ -20,6 +19,10 @@ const COLOR_OPTIONS = [
     { label: 'Black (Neutral)', value: 'bg-neutral-900' },
     { label: 'White/Silver', value: 'bg-slate-300' },
     { label: 'Emerald', value: 'bg-emerald-900' },
+    { label: 'Red', value: 'bg-red-700' },
+    { label: 'Orange', value: 'bg-orange-700' },
+    { label: 'Pink', value: 'bg-pink-700' },
+    { label: 'Yellow', value: 'bg-yellow-600' },
 ];
 
 // --- Mock Data ---
