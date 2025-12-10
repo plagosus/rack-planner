@@ -677,7 +677,7 @@ export default function RackPlanner() {
                     </section>
 
                     {/* RIGHT: Library Sidebar */}
-                    <aside className="w-80 bg-white dark:bg-gray-900 border-l border-gray-200 flex flex-col shadow-2xl z-30 shrink-0 overflow-hidden max-h-[calc(100vh-56px)]">
+                    <aside className="w-96 bg-white dark:bg-gray-900 border-l border-gray-200 flex flex-col shadow-2xl z-30 shrink-0 overflow-hidden max-h-[calc(100vh-56px)]">
                         {/* Tabs */}
                         <div className="flex border-b border-gray-200 dark:border-gray-800">
                             <button
@@ -732,13 +732,29 @@ export default function RackPlanner() {
                                                             className="group bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-2 cursor-grab hover:border-indigo-500 hover:shadow-md transition-all flex flex-col gap-2"
                                                         >
                                                             {/* Visual Preview */}
-                                                            <div className="h-10 w-full rounded overflow-hidden relative">
-                                                                <ModuleFace
-                                                                    module={module}
-                                                                    rackWidth={
-                                                                        rackSettings.widthStandard
-                                                                    }
-                                                                />
+                                                            <div
+                                                                className="w-full rounded overflow-hidden relative"
+                                                                style={{
+                                                                    height:
+                                                                        module.uSize *
+                                                                        U_PIXELS *
+                                                                        0.5,
+                                                                }}
+                                                            >
+                                                                <div
+                                                                    style={{
+                                                                        width: '200%', // 100 / 0.5
+                                                                        height:
+                                                                            module.uSize * U_PIXELS,
+                                                                        transform: 'scale(0.5)',
+                                                                        transformOrigin: 'top left',
+                                                                    }}
+                                                                >
+                                                                    <ModuleFace
+                                                                        module={module}
+                                                                        rackWidth="10inch"
+                                                                    />
+                                                                </div>
                                                                 {/* Draggable Hint */}
                                                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
                                                                     <Move
