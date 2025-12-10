@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Server, Search, Moon, Sun, Trash2, Upload, GripVertical, Move } from 'lucide-react';
+import { Server, Search, Moon, Sun, Trash2, Upload, GripVertical, Move, Pencil } from 'lucide-react';
 import type { ModuleType, RackModule, RackSettings, RackSlot, RackWidth } from './types';
 import { ModuleFace } from './components/ModuleFace';
 
@@ -121,6 +121,7 @@ export default function RackPlanner() {
     const [customType, setCustomType] = useState<ModuleType>('generic');
     const [customColor, setCustomColor] = useState(COLOR_OPTIONS[0].value);
     const [customImage, setCustomImage] = useState<string | null>(null);
+    const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLElement>(null);
@@ -353,25 +354,69 @@ export default function RackPlanner() {
         }
     };
 
-    const createCustomModule = () => {
-        if (!customName) return;
-        const newMod: RackModule = {
-            id: `custom-${Date.now()}`,
-            name: customName,
-            uSize: customU,
-            type: customType,
-            color: customColor,
-            image: customImage || undefined,
-        };
-        setCustomLibrary([...customLibrary, newMod]);
+    const handleEditModule = (e: React.MouseEvent, module: RackModule) => {
+        e.stopPropagation();
+        setCustomName(module.name);
+        setCustomU(module.uSize);
+        setCustomType(module.type);
+        setCustomColor(module.color || COLOR_OPTIONS[0].value);
+        setCustomImage(module.image || null);
+        setEditingModuleId(module.id);
+        setLibraryTab('custom');
+    };
+
+    const cancelEdit = () => {
         setCustomName('');
+        setCustomU(1);
+        setCustomType('generic');
+        setCustomColor(COLOR_OPTIONS[0].value);
         setCustomImage(null);
+        setEditingModuleId(null);
+    };
+
+    const createOrUpdateCustomModule = () => {
+        if (!customName) return;
+
+        if (editingModuleId) {
+            // Update existing
+            const updatedLibrary = customLibrary.map((mod) =>
+                mod.id === editingModuleId
+                    ? {
+                          ...mod,
+                          name: customName,
+                          uSize: customU,
+                          type: customType,
+                          color: customColor,
+                          image: customImage || undefined,
+                      }
+                    : mod
+            );
+            setCustomLibrary(updatedLibrary);
+        } else {
+            // Create new
+            const newMod: RackModule = {
+                id: `custom-${Date.now()}`,
+                name: customName,
+                uSize: customU,
+                type: customType,
+                color: customColor,
+                image: customImage || undefined,
+            };
+            setCustomLibrary([...customLibrary, newMod]);
+        }
+
+        cancelEdit(); // Resets form and editing state
         setLibraryTab('catalog');
     };
 
     const deleteCustomModule = (e: React.MouseEvent, id: string) => {
         e.stopPropagation();
-        setCustomLibrary(customLibrary.filter((m) => m.id !== id));
+        if (window.confirm('Are you sure you want to delete this custom module?')) {
+            if (editingModuleId === id) {
+                cancelEdit();
+            }
+            setCustomLibrary(customLibrary.filter((m) => m.id !== id));
+        }
     };
 
     const clearRack = () => {
@@ -748,10 +793,13 @@ export default function RackPlanner() {
                                 Parts Library
                             </button>
                             <button
-                                onClick={() => setLibraryTab('custom')}
+                                onClick={() => {
+                                    if (editingModuleId) cancelEdit();
+                                    setLibraryTab('custom');
+                                }}
                                 className={`flex-1 py-3 text-xs font-semibold uppercase tracking-wide ${libraryTab === 'custom' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'}`}
                             >
-                                Add Custom
+                                {editingModuleId ? 'Edit Module' : 'Add Custom'}
                             </button>
                         </div>
 
@@ -833,17 +881,30 @@ export default function RackPlanner() {
                                                                 {module.id.startsWith(
                                                                     'custom-'
                                                                 ) && (
-                                                                    <button
-                                                                        onClick={(e) =>
-                                                                            deleteCustomModule(
-                                                                                e,
-                                                                                module.id
-                                                                            )
-                                                                        }
-                                                                        className="text-gray-400 hover:text-red-500"
-                                                                    >
-                                                                        <Trash2 size={12} />
-                                                                    </button>
+                                                                    <div className="flex items-center gap-1">
+                                                                        <button
+                                                                            onClick={(e) =>
+                                                                                handleEditModule(
+                                                                                    e,
+                                                                                    module
+                                                                                )
+                                                                            }
+                                                                            className="text-gray-400 hover:text-indigo-500"
+                                                                        >
+                                                                            <Pencil size={12} />
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={(e) =>
+                                                                                deleteCustomModule(
+                                                                                    e,
+                                                                                    module.id
+                                                                                )
+                                                                            }
+                                                                            className="text-gray-400 hover:text-red-500"
+                                                                        >
+                                                                            <Trash2 size={12} />
+                                                                        </button>
+                                                                    </div>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -973,13 +1034,23 @@ export default function RackPlanner() {
                                     </p>
                                 </div>
 
-                                <button
-                                    onClick={createCustomModule}
-                                    disabled={!customName}
-                                    className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-md text-sm font-semibold shadow-sm transition-colors"
-                                >
-                                    Save to Library
-                                </button>
+                                <div className="flex gap-2">
+                                    {editingModuleId && (
+                                        <button
+                                            onClick={cancelEdit}
+                                            className="flex-1 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md text-sm font-semibold shadow-sm transition-colors"
+                                        >
+                                            Cancel
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={createOrUpdateCustomModule}
+                                        disabled={!customName}
+                                        className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-md text-sm font-semibold shadow-sm transition-colors"
+                                    >
+                                        {editingModuleId ? 'Update Module' : 'Save to Library'}
+                                    </button>
+                                </div>
                             </div>
                         )}
 
