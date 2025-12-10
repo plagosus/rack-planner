@@ -678,12 +678,38 @@ export default function RackPlanner() {
 
                                             {/* Right Rail */}
                                             <div
-                                                className="absolute top-0 bottom-0"
+                                                className="absolute top-0 bottom-0 flex flex-col items-center w-full"
                                                 style={{
                                                     right: `-${RAIL_WIDTH}px`,
                                                     width: `${RAIL_WIDTH}px`,
                                                 }}
-                                            ></div>
+                                            >
+                                                {isModuleStart && slot.module
+                                                    ? Array.from({ length: slot.module.uSize }).map(
+                                                          (_, i) => (
+                                                              <div
+                                                                  key={i}
+                                                                  style={{ height: U_PIXELS }}
+                                                                  className="flex items-center justify-center w-full"
+                                                              >
+                                                                  <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
+                                                                      {slot.uPosition - i}
+                                                                  </span>
+                                                              </div>
+                                                          )
+                                                      )
+                                                    : !isOccupied &&
+                                                      !isModulePart && (
+                                                          <div
+                                                              style={{ height: U_PIXELS }}
+                                                              className="flex items-center justify-center w-full"
+                                                          >
+                                                              <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
+                                                                  {slot.uPosition}
+                                                              </span>
+                                                          </div>
+                                                      )}
+                                            </div>
                                         </div>
                                     );
                                 })}
