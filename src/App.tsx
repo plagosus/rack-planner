@@ -569,9 +569,28 @@ export default function RackPlanner() {
                                                 {/* Empty Slot Placeholder */}
                                                 {!isOccupied && !isModulePart && (
                                                     <div
-                                                        className="w-full border-b border-gray-400/20 dark:border-white/5 flex items-center justify-center"
+                                                        className="relative w-full h-full flex items-center justify-center border-b border-gray-400/20 dark:border-white/5"
                                                         style={{ height: U_PIXELS }}
                                                     >
+                                                        {/* Left Silver Bar */}
+                                                        <div
+                                                            className="absolute left-[1px] top-0 bottom-0 w-4 bg-gray-300 dark:bg-gray-700 border-r border-gray-400/30 dark:border-gray-800/50 shadow-inner flex flex-col justify-between py-3 items-center"
+                                                        >
+                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                        </div>
+
+                                                        {/* Right Silver Bar */}
+                                                        <div
+                                                            className="absolute right-[1px] top-0 bottom-0 w-4 bg-gray-300 dark:bg-gray-700 border-l border-gray-400/30 dark:border-gray-800/50 shadow-inner flex flex-col justify-between py-3 items-center"
+                                                        >
+                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                        </div>
+
+                                                        {/* Original Empty Placeholder text */}
                                                         <div className="text-gray-400/20 dark:text-white/10 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity select-none pointer-events-none">
                                                             Empty {slot.uPosition}U
                                                         </div>
