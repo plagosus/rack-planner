@@ -31,6 +31,7 @@ const PREDEFINED_MODULES: RackModule[] = [
     { id: 'gen-1u', name: 'Generic 1U', uSize: 1, type: 'generic', color: 'bg-gray-700' },
     { id: 'gen-2u', name: 'Generic 2U', uSize: 2, type: 'generic', color: 'bg-gray-700' },
     { id: 'gen-3u', name: 'Generic 3U', uSize: 3, type: 'generic', color: 'bg-gray-700' },
+    { id: 'gen-4u', name: 'Generic 4U', uSize: 4, type: 'generic', color: 'bg-gray-700' },
 
     // Servers
     { id: 'server-1u', name: 'Server 1U', uSize: 1, type: 'server', color: 'bg-indigo-950' },
