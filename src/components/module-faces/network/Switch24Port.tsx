@@ -1,22 +1,29 @@
+import { Port } from './Port';
 
 export const Switch24Port = () => {
     return (
         <div className="flex flex-col gap-1 w-full max-w-[90%] items-end pr-4 mt-3">
-            {/* 2 Rows of 12 Ports */}
-            <div className="flex gap-1 justify-end w-full">
-                {Array.from({ length: 12 }).map((_, i) => (
-                    <div
-                        key={`top-${i}`}
-                        className="w-3 h-3 bg-black/80 rounded-[1px] border border-gray-600 shadow-inner"
-                    ></div>
+            {/* 2 Rows of 12 Ports (3 groups of 4) */}
+            <div className="flex gap-3 justify-end w-full">
+                {[0, 1, 2].map((groupIndex) => (
+                    <div key={`top-group-${groupIndex}`} className="flex gap-1">
+                        {Array.from({ length: 4 }).map((_, i) => (
+                            <div key={`top-${groupIndex}-${i}`}>
+                                <Port />
+                            </div>
+                        ))}
+                    </div>
                 ))}
             </div>
-            <div className="flex gap-1 justify-end w-full">
-                {Array.from({ length: 12 }).map((_, i) => (
-                    <div
-                        key={`bottom-${i}`}
-                        className="w-3 h-3 bg-black/80 rounded-[1px] border border-gray-600 shadow-inner"
-                    ></div>
+            <div className="flex gap-3 justify-end w-full">
+                {[0, 1, 2].map((groupIndex) => (
+                    <div key={`bottom-group-${groupIndex}`} className="flex gap-1">
+                        {Array.from({ length: 4 }).map((_, i) => (
+                            <div key={`bottom-${groupIndex}-${i}`}>
+                                <Port />
+                            </div>
+                        ))}
+                    </div>
                 ))}
             </div>
         </div>
