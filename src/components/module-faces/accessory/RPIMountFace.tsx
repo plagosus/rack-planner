@@ -21,7 +21,7 @@ export const RPIMountFace = ({
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center py-2">
-            <div className="flex gap-2 items-center justify-center w-full px-2">
+            <div className="flex gap-4 items-center justify-center w-full px-2">
                 {Array.from({ length: slotCount }).map((_, i) => (
                     <RPIMountSlot key={i} vertical={is2U} />
                 ))}
