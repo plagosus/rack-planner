@@ -28,7 +28,7 @@ export const AccessoryFace = ({
     }
 
     if (id === 'rpi-mount' || name.includes('raspberry') || name.includes('rpi')) {
-        return <RPIMountFace />;
+        return <RPIMountFace rackWidth={rackWidth} uSize={module.uSize} />;
     }
 
     // Default to Vent if it seems like a vent, or if generic accessory

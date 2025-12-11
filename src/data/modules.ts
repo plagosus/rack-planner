@@ -49,9 +49,16 @@ export const PREDEFINED_MODULES: RackModule[] = [
     { id: 'shelf', name: 'Shelf', uSize: 1, type: 'accessory', color: 'bg-slate-800' },
     {
         id: 'rpi-mount',
-        name: 'Raspberry Pi Mount',
+        name: '1U Raspberry Pi Mount',
         uSize: 1,
         type: 'accessory',
-        color: 'bg-emerald-900',
+        color: 'bg-slate-900',
+    },
+    {
+        id: 'rpi-mount-2u',
+        name: '2U Raspberry Pi Mount',
+        uSize: 2,
+        type: 'accessory',
+        color: 'bg-slate-900',
     },
 ];

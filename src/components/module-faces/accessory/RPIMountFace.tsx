@@ -1,14 +1,31 @@
+import { type RackWidth } from '../../../types';
+import { RPIMountSlot } from './RPIMountSlot';
 
-export const RPIMountFace = () => {
+export const RPIMountFace = ({
+    rackWidth,
+    uSize = 1,
+}: {
+    rackWidth?: RackWidth;
+    uSize?: number;
+}) => {
+    const is10Inch = rackWidth === '10inch';
+    const is2U = uSize === 2;
+
+    // Slot count logic
+    let slotCount;
+    if (is2U) {
+        slotCount = is10Inch ? 4 : 10;
+    } else {
+        slotCount = is10Inch ? 2 : 4;
+    }
+
     return (
-        <div className="w-full h-full flex items-center justify-center gap-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="w-8 h-full bg-green-900/40 border border-green-800 mx-1 flex flex-col items-center justify-center relative">
-                    {/* Fake RPi PCB */}
-                    <div className="w-6 h-[80%] bg-emerald-700/80 border border-emerald-600 rounded-sm shadow-md"></div>
-                    <div className="absolute top-2 w-4 h-4 bg-gray-400 rounded-sm"></div> {/* USB/Ethernet */}
-                </div>
-            ))}
+        <div className="w-full h-full flex flex-col items-center justify-center py-2">
+            <div className="flex gap-2 items-center justify-center w-full px-2">
+                {Array.from({ length: slotCount }).map((_, i) => (
+                    <RPIMountSlot key={i} vertical={is2U} />
+                ))}
+            </div>
         </div>
     );
 };
