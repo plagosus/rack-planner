@@ -4,22 +4,22 @@ import { Switch16Port } from './network/Switch16Port';
 import { Switch8Port } from './network/Switch8Port';
 import { Switch5Port } from './network/Switch5Port';
 
-export const NetworkFace = ({ module, animationsEnabled, isPowered }: { module: RackModule; animationsEnabled?: boolean; isPowered?: boolean }) => {
+export const NetworkFace = ({ module, isPowered }: { module: RackModule; isPowered?: boolean }) => {
     // Determine which networking device to show
     const name = module.name.toLowerCase();
     const id = module.id.toLowerCase();
 
     if (id === 'switch-24' || name.includes('24-port')) {
-        return <Switch24Port animationsEnabled={animationsEnabled} isPowered={isPowered} />;
+        return <Switch24Port isPowered={isPowered} />;
     }
     if (id === 'switch-16' || name.includes('16-port')) {
-        return <Switch16Port animationsEnabled={animationsEnabled} isPowered={isPowered} />;
+        return <Switch16Port isPowered={isPowered} />;
     }
     if (id === 'switch-8' || name.includes('8-port')) {
-        return <Switch8Port animationsEnabled={animationsEnabled} isPowered={isPowered} />;
+        return <Switch8Port isPowered={isPowered} />;
     }
     if (id === 'switch-5' || name.includes('5-port')) {
-        return <Switch5Port animationsEnabled={animationsEnabled} isPowered={isPowered} />;
+        return <Switch5Port isPowered={isPowered} />;
     }
 
     // Default Fallback (Generic networking look - maybe flashing lights)

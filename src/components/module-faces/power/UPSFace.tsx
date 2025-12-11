@@ -1,4 +1,4 @@
-export const UPSFace = ({ animationsEnabled = true, isPowered = true }: { animationsEnabled?: boolean; isPowered?: boolean }) => {
+export const UPSFace = ({ isPowered = true }: { isPowered?: boolean }) => {
     return (
         <div className="flex items-center justify-between w-full h-full px-8 bg-gray-800 relative overflow-hidden">
             {/* LCD Screen Area - Left */}
@@ -22,7 +22,7 @@ export const UPSFace = ({ animationsEnabled = true, isPowered = true }: { animat
             <div className="flex items-center gap-4 z-10">
                 <div className="flex gap-2">
                     <div className="flex flex-col items-center gap-1">
-                        <div className={`w-1.5 h-1.5 rounded-full ${isPowered ? 'bg-green-500 shadow-[0_0_4px_2px_rgba(34,197,94,0.4)]' : 'bg-green-900/50'} ${animationsEnabled && isPowered ? 'animate-pulse' : ''}`}></div>
+                        <div className={`w-1.5 h-1.5 rounded-full ${isPowered ? 'bg-green-500 shadow-[0_0_4px_2px_rgba(34,197,94,0.4)] animate-pulse' : 'bg-green-900/50'}`}></div>
                         <span className="text-[5px] text-gray-500 uppercase">Line</span>
                     </div>
                     <div className="flex flex-col items-center gap-1">

@@ -1,7 +1,7 @@
 import { useDriveLedMode } from './utils';
 
-export const DriveBay25 = ({ className = '', forceOff = false, animationsEnabled, isPowered = true }: { className?: string; forceOff?: boolean; animationsEnabled?: boolean; isPowered?: boolean }) => {
-    const { mode, isAmberOn } = useDriveLedMode(forceOff || !isPowered, animationsEnabled);
+export const DriveBay25 = ({ className = '', forceOff = false, isPowered = true }: { className?: string; forceOff?: boolean; isPowered?: boolean }) => {
+    const { mode, isAmberOn } = useDriveLedMode(forceOff || !isPowered);
 
     return (
         <div

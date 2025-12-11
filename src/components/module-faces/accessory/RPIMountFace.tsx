@@ -4,13 +4,9 @@ import { RPIMountSlot } from './RPIMountSlot';
 export const RPIMountFace = ({
     rackWidth,
     uSize = 1,
-    animationsEnabled,
-    isPowered,
 }: {
     rackWidth?: RackWidth;
     uSize?: number;
-    animationsEnabled?: boolean;
-    isPowered?: boolean;
 }) => {
     const is10Inch = rackWidth === '10inch';
     const is1U = uSize === 1;
@@ -29,17 +25,17 @@ export const RPIMountFace = ({
             {/* Horizontal Slots (1U) */}
             {is1U && !is10Inch && (
                 <div className="flex justify-between items-center w-full px-6 gap-4">
-                    <RPIMountSlot animationsEnabled={animationsEnabled} isPowered={isPowered} />
-                    <RPIMountSlot animationsEnabled={animationsEnabled} isPowered={isPowered} />
-                    <RPIMountSlot animationsEnabled={animationsEnabled} isPowered={isPowered} />
-                    <RPIMountSlot animationsEnabled={animationsEnabled} isPowered={isPowered} />
+                    <RPIMountSlot />
+                    <RPIMountSlot />
+                    <RPIMountSlot />
+                    <RPIMountSlot />
                 </div>
             )}
 
             {is1U && is10Inch && (
                 <div className="flex justify-evenly items-center w-full px-4 gap-4">
-                    <RPIMountSlot animationsEnabled={animationsEnabled} isPowered={isPowered} />
-                    <RPIMountSlot animationsEnabled={animationsEnabled} isPowered={isPowered} />
+                    <RPIMountSlot />
+                    <RPIMountSlot />
                 </div>
             )}
 
@@ -47,7 +43,7 @@ export const RPIMountFace = ({
             {is2U && (
                 <div className="flex justify-evenly items-center w-full px-4 h-full">
                     {Array.from({ length: slotCount }).map((_, i) => (
-                        <RPIMountSlot key={i} vertical animationsEnabled={animationsEnabled} isPowered={isPowered} />
+                        <RPIMountSlot key={i} vertical />
                     ))}
                 </div>
             )}

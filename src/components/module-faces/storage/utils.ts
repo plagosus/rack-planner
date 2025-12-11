@@ -5,7 +5,7 @@ export const calculateOffThreshold = (totalDrives: number) => {
     return Math.max(3, Math.floor(totalDrives * 0.8));
 };
 
-export const useDriveLedMode = (forceOff: boolean = false, animationsEnabled: boolean = true) => {
+export const useDriveLedMode = (forceOff: boolean = false) => {
     const [mode, setMode] = useState<'off' | 'idle' | 'reading'>('idle');
     const [isAmberOn, setIsAmberOn] = useState(false);
 
@@ -13,11 +13,6 @@ export const useDriveLedMode = (forceOff: boolean = false, animationsEnabled: bo
     useEffect(() => {
         if (forceOff) {
             setMode('off');
-            return;
-        }
-
-        if (!animationsEnabled) {
-            setMode('idle');
             return;
         }
 
@@ -40,15 +35,11 @@ export const useDriveLedMode = (forceOff: boolean = false, animationsEnabled: bo
         }
 
         return () => clearTimeout(timeoutId);
-    }, [mode, forceOff, animationsEnabled]);
+    }, [mode, forceOff]);
 
     // Blinking logic (only active in 'reading' mode)
+    // Blinking logic (only active in 'reading' mode)
     useEffect(() => {
-        if (!animationsEnabled) {
-            setIsAmberOn(false);
-            return;
-        }
-
         if (mode !== 'reading') {
             setIsAmberOn(false);
             return;
@@ -67,7 +58,7 @@ export const useDriveLedMode = (forceOff: boolean = false, animationsEnabled: bo
         toggleBlink();
 
         return () => clearTimeout(timeoutId);
-    }, [mode, animationsEnabled]);
+    }, [mode]);
 
     return { mode, isAmberOn };
 };

@@ -637,7 +637,6 @@ export default function RackPlanner() {
                                                                     rackSettings.widthStandard
                                                                 }
                                                                 isPowered={areAnimationsEnabled}
-                                                                animationsEnabled={areAnimationsEnabled}
                                                             />
 
                                                             {/* Hover Overlay Actions */}
@@ -829,7 +828,6 @@ export default function RackPlanner() {
                                                                     <ModuleFace
                                                                         module={module}
                                                                         rackWidth="10inch"
-                                                                        animationsEnabled={false}
                                                                         isPowered={false}
                                                                     />
                                                                 </div>

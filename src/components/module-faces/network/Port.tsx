@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export const Port = ({ className = "w-4 h-4", animationsEnabled = true, isPowered = true }: { className?: string; animationsEnabled?: boolean; isPowered?: boolean }) => {
+export const Port = ({ className = "w-4 h-4", isPowered = true }: { className?: string; isPowered?: boolean }) => {
     // 3 states: 'off', 'online' (linked), 'active' (transmitting)
     // Initialize random state to avoid unison effect
     const [status, setStatus] = useState<'off' | 'online' | 'active'>(() => {
@@ -15,7 +15,7 @@ export const Port = ({ className = "w-4 h-4", animationsEnabled = true, isPowere
 
     // State simulation loop
     useEffect(() => {
-        if (!animationsEnabled || !isPowered) return;
+        if (!isPowered) return;
 
         if (status === 'off') {
             const timeout = setTimeout(() => {
@@ -38,11 +38,11 @@ export const Port = ({ className = "w-4 h-4", animationsEnabled = true, isPowere
         }, duration);
 
         return () => clearTimeout(timeoutId);
-    }, [status, animationsEnabled, isPowered]);
+    }, [status, isPowered]);
 
     // Blinking logic for Amber LED (Active mode)
     useEffect(() => {
-        if (!animationsEnabled || !isPowered) {
+        if (!isPowered) {
             setIsAmberOn(false);
             return;
         }
@@ -62,7 +62,7 @@ export const Port = ({ className = "w-4 h-4", animationsEnabled = true, isPowere
 
         toggleBlink();
         return () => clearTimeout(timeoutId);
-    }, [status, animationsEnabled, isPowered]);
+    }, [status, isPowered]);
 
     return (
         <div className="flex flex-col items-center gap-[0px]">

@@ -1,6 +1,6 @@
 import { Port } from './Port';
 
-export const Switch8Port = ({ animationsEnabled, isPowered }: { animationsEnabled?: boolean; isPowered?: boolean }) => {
+export const Switch8Port = ({ isPowered }: { isPowered?: boolean }) => {
     return (
         <div className="flex flex-col gap-1 w-full max-w-[90%] items-end pr-4 mt-3">
             {/* 2 Groups of 4 */}
@@ -9,7 +9,7 @@ export const Switch8Port = ({ animationsEnabled, isPowered }: { animationsEnable
                     <div key={`group-${groupIndex}`} className="flex gap-1">
                         {Array.from({ length: 4 }).map((_, i) => (
                             <div key={`${groupIndex}-${i}`}>
-                                <Port animationsEnabled={animationsEnabled} isPowered={isPowered} />
+                                <Port isPowered={isPowered} />
                             </div>
                         ))}
                     </div>

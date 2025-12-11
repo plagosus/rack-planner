@@ -2,7 +2,7 @@ import { type RackWidth } from '../../../types';
 import { DriveBay25 } from './DriveBay25';
 import { calculateOffThreshold } from './utils';
 
-export const Nas2u25Face = ({ rackWidth, animationsEnabled, isPowered }: { rackWidth?: RackWidth; animationsEnabled?: boolean; isPowered?: boolean }) => {
+export const Nas2u25Face = ({ rackWidth, isPowered }: { rackWidth?: RackWidth; isPowered?: boolean }) => {
     const drivesPerRow = rackWidth === '10inch' ? 10 : 20; // High density 2.5"
     const offThreshold = calculateOffThreshold(drivesPerRow);
 
@@ -11,7 +11,7 @@ export const Nas2u25Face = ({ rackWidth, animationsEnabled, isPowered }: { rackW
             {/* Row 1 */}
             <div className="flex items-center justify-between w-full  gap-0">
                 {Array.from({ length: drivesPerRow }).map((_, i) => (
-                    <DriveBay25 key={i} className={'shrink-0'} forceOff={i >= offThreshold} animationsEnabled={animationsEnabled} isPowered={isPowered} />
+                    <DriveBay25 key={i} className={'shrink-0'} forceOff={i >= offThreshold} isPowered={isPowered} />
                 ))}
             </div>
         </div>

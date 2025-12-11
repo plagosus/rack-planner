@@ -1,4 +1,4 @@
-export const RPIMountSlot = ({ vertical = false, animationsEnabled, isPowered = true }: { vertical?: boolean; animationsEnabled?: boolean; isPowered?: boolean }) => {
+export const RPIMountSlot = ({ vertical = false }: { vertical?: boolean }) => {
     return (
         <div
             className={`${vertical

@@ -3,11 +3,9 @@ import { type RackWidth } from '../../../types';
 
 export const PatchPanelFace = ({
     rackWidth,
-    animationsEnabled,
     isPowered,
 }: {
     rackWidth?: RackWidth;
-    animationsEnabled?: boolean;
     isPowered?: boolean;
 }) => {
     const is10Inch = rackWidth === '10inch';
@@ -19,11 +17,10 @@ export const PatchPanelFace = ({
                 {Array.from({ length: portCount }).map((_, i) => (
                     <div key={i} className="flex flex-col items-center gap-2 w-full">
                         {/* White Label */}
-                        <div className="w-[80%] h-2 bg-white/70 rounded-[1px] shadow-sm"></div>
+                        <div className="w-[80%] h-1.5 bg-white/70 rounded-[1px] shadow-sm"></div>
                         {/* Port */}
                         <Port
-                            className="w-5 h-5"
-                            animationsEnabled={animationsEnabled}
+                            className="w-6.25 h-6.25"
                             isPowered={isPowered}
                         />
                     </div>
