@@ -1,4 +1,4 @@
-export type ModuleType = 'server' | 'networking' | 'storage' | 'power' | 'accessory' | 'generic';
+export type ModuleType = 'server' | 'network' | 'storage' | 'power' | 'accessory' | 'generic';
 export type RackWidth = '19inch' | '10inch';
 
 export interface RackModule {

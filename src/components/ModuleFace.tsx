@@ -1,5 +1,5 @@
 import { type RackModule, type RackWidth } from '../types';
-import { NetworkingFace } from './module-faces/NetworkingFace';
+import { NetworkFace } from './module-faces/NetworkFace';
 import { ServerFace } from './module-faces/ServerFace';
 import { StorageFace } from './module-faces/StorageFace';
 import { PowerFace } from './module-faces/PowerFace';
@@ -26,10 +26,10 @@ export const ModuleFace = ({
             style={
                 hasImage
                     ? {
-                          backgroundImage: `url(${module.image})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                      }
+                        backgroundImage: `url(${module.image})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                    }
                     : {}
             }
         >
@@ -42,7 +42,7 @@ export const ModuleFace = ({
                     {/* Visual Features based on Type */}
                     <div className="flex gap-2 w-full justify-center">
                         {/* Networking: Ports */}
-                        {module.type === 'networking' && <NetworkingFace />}
+                        {module.type === 'network' && <NetworkFace module={module} />}
 
                         {/* Server: Indicators or Drive Bays */}
                         {module.type === 'server' && <ServerFace />}
