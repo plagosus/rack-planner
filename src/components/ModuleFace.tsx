@@ -9,10 +9,14 @@ export const ModuleFace = ({
     module,
     rackWidth,
     className = '',
+    animationsEnabled = true,
+    isPowered = true,
 }: {
     module: RackModule;
     rackWidth?: RackWidth;
     className?: string;
+    animationsEnabled?: boolean;
+    isPowered?: boolean;
 }) => {
     const hasImage = !!module.image;
 
@@ -41,24 +45,24 @@ export const ModuleFace = ({
                     {/* Visual Features based on Type */}
                     <div className="flex gap-2 w-full justify-center">
                         {/* Networking: Ports */}
-                        {module.type === 'network' && <NetworkFace module={module} />}
+                        {module.type === 'network' && <NetworkFace module={module} animationsEnabled={animationsEnabled} isPowered={isPowered} />}
 
                         {/* Server: Indicators or Drive Bays */}
-                        {module.type === 'server' && <ServerFace />}
+                        {module.type === 'server' && <ServerFace animationsEnabled={animationsEnabled} isPowered={isPowered} />}
 
                         {/* Storage: Drive Arrays */}
                         {module.type === 'storage' && (
-                            <StorageFace module={module} rackWidth={rackWidth} />
+                            <StorageFace module={module} rackWidth={rackWidth} animationsEnabled={animationsEnabled} isPowered={isPowered} />
                         )}
 
                         {/* Power: Switch/Outlets */}
                         {module.type === 'power' && (
-                            <PowerFace module={module} rackWidth={rackWidth} />
+                            <PowerFace module={module} rackWidth={rackWidth} animationsEnabled={animationsEnabled} isPowered={isPowered} />
                         )}
 
                         {/* Accessories */}
                         {module.type === 'accessory' && (
-                            <AccessoryFace module={module} rackWidth={rackWidth} />
+                            <AccessoryFace module={module} rackWidth={rackWidth} animationsEnabled={animationsEnabled} isPowered={isPowered} />
                         )}
                     </div>
                 </div>

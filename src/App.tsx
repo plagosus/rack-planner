@@ -24,6 +24,15 @@ export default function RackPlanner() {
         }
         return true;
     });
+
+    const [areAnimationsEnabled, setAreAnimationsEnabled] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('animationsEnabled');
+            return saved !== null ? saved === 'true' : true;
+        }
+        return true;
+    });
+
     const [isLoading, setIsLoading] = useState(true);
 
     // Rack Configuration
@@ -72,6 +81,10 @@ export default function RackPlanner() {
         }
         localStorage.setItem('darkMode', String(isDarkMode));
     }, [isDarkMode]);
+
+    useEffect(() => {
+        localStorage.setItem('animationsEnabled', String(areAnimationsEnabled));
+    }, [areAnimationsEnabled]);
 
     // Handle Responsive Scaling
     useEffect(() => {
@@ -456,6 +469,20 @@ export default function RackPlanner() {
 
                     <div className="flex items-center gap-2">
                         <button
+                            onClick={() => setAreAnimationsEnabled(!areAnimationsEnabled)}
+                            className={`p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors ${areAnimationsEnabled ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`}
+                            title={areAnimationsEnabled ? "Disable Animations" : "Enable Animations"}
+                        >
+                            {areAnimationsEnabled ? (
+                                <div className="relative">
+                                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                                    <Move size={18} />
+                                </div>
+                            ) : (
+                                <Move size={18} />
+                            )}
+                        </button>
+                        <button
                             onClick={() => setIsDarkMode(!isDarkMode)}
                             className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 text-yellow-500 dark:text-indigo-400"
                         >
@@ -616,6 +643,8 @@ export default function RackPlanner() {
                                                                 rackWidth={
                                                                     rackSettings.widthStandard
                                                                 }
+                                                                isPowered={true}
+                                                                animationsEnabled={areAnimationsEnabled}
                                                             />
 
                                                             {/* Hover Overlay Actions */}
@@ -807,6 +836,8 @@ export default function RackPlanner() {
                                                                     <ModuleFace
                                                                         module={module}
                                                                         rackWidth="10inch"
+                                                                        animationsEnabled={false}
+                                                                        isPowered={false}
                                                                     />
                                                                 </div>
                                                                 {/* Draggable Hint */}

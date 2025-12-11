@@ -1,4 +1,4 @@
-export const ServerFace = () => {
+export const ServerFace = ({ animationsEnabled, isPowered }: { animationsEnabled?: boolean; isPowered?: boolean }) => {
     return (
         <div className="flex items-center gap-2">
             <div className="flex flex-col gap-0.5">

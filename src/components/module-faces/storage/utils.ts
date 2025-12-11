@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 
 export const calculateOffThreshold = (totalDrives: number) => {
-    // Keep at least 3 drives active (idle/reading), unless total drives is small (handled by Math.max logic implicitly if total < 3? No, wait)
-    // The requirement was: "keep at least 2 drives on idle". The user last changed it to Math.max(3, ...). I will stick to 3.
+    // Keep at least 3 drives active (idle/reading), unless total drives is small
     return Math.max(3, Math.floor(totalDrives * 0.8));
 };
 
-export const useDriveLedMode = (forceOff: boolean = false) => {
+export const useDriveLedMode = (forceOff: boolean = false, animationsEnabled: boolean = true) => {
     const [mode, setMode] = useState<'off' | 'idle' | 'reading'>('idle');
     const [isAmberOn, setIsAmberOn] = useState(false);
 
@@ -14,6 +13,11 @@ export const useDriveLedMode = (forceOff: boolean = false) => {
     useEffect(() => {
         if (forceOff) {
             setMode('off');
+            return;
+        }
+
+        if (!animationsEnabled) {
+            setMode('idle');
             return;
         }
 
@@ -36,10 +40,15 @@ export const useDriveLedMode = (forceOff: boolean = false) => {
         }
 
         return () => clearTimeout(timeoutId);
-    }, [mode, forceOff]);
+    }, [mode, forceOff, animationsEnabled]);
 
     // Blinking logic (only active in 'reading' mode)
     useEffect(() => {
+        if (!animationsEnabled) {
+            setIsAmberOn(false);
+            return;
+        }
+
         if (mode !== 'reading') {
             setIsAmberOn(false);
             return;
@@ -58,7 +67,7 @@ export const useDriveLedMode = (forceOff: boolean = false) => {
         toggleBlink();
 
         return () => clearTimeout(timeoutId);
-    }, [mode]);
+    }, [mode, animationsEnabled]);
 
     return { mode, isAmberOn };
 };

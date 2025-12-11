@@ -7,14 +7,21 @@ import { VentFace } from './accessory/VentFace';
 
 export const AccessoryFace = ({
     module,
-    rackWidth,
+    rackWidth = '19inch',
+    animationsEnabled,
+    isPowered,
 }: {
     module: RackModule;
     rackWidth?: RackWidth;
+    animationsEnabled?: boolean;
+    isPowered?: boolean;
 }) => {
     const id = module.id.toLowerCase();
     const name = module.name.toLowerCase();
 
+    if (module.id === 'rpi-mount-1u') {
+        return <RPIMountFace animationsEnabled={animationsEnabled} isPowered={isPowered} />;
+    }
     if (id === 'cable-man-1u' || name.includes('cable management')) {
         return <CableManagementFace />;
     }
@@ -28,7 +35,7 @@ export const AccessoryFace = ({
     }
 
     if (id === 'rpi-mount' || name.includes('raspberry') || name.includes('rpi')) {
-        return <RPIMountFace rackWidth={rackWidth} uSize={module.uSize} />;
+        return <RPIMountFace rackWidth={rackWidth} uSize={module.uSize} animationsEnabled={animationsEnabled} />;
     }
 
     // Default to Vent if it seems like a vent, or if generic accessory
