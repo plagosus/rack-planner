@@ -64,7 +64,7 @@ const PREDEFINED_MODULES: RackModule[] = [
     },
     {
         id: 'cable-man-1u',
-        name: 'Cable Management 1U',
+        name: 'Cable Management',
         uSize: 1,
         type: 'accessory',
         color: 'bg-neutral-800',

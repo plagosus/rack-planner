@@ -3,7 +3,7 @@ import { NetworkFace } from './module-faces/NetworkFace';
 import { ServerFace } from './module-faces/ServerFace';
 import { StorageFace } from './module-faces/StorageFace';
 import { PowerFace } from './module-faces/PowerFace';
-import { VentFace } from './module-faces/VentFace';
+import { AccessoryFace } from './module-faces/AccessoryFace';
 
 export const ModuleFace = ({
     module,
@@ -17,7 +17,6 @@ export const ModuleFace = ({
     const hasImage = !!module.image;
 
     // Simple visual helpers based on type/name
-    const isVent = module.name.toLowerCase().includes('vent');
     const holeCount = (module.uSize || 1) * 3;
 
     return (
@@ -57,8 +56,10 @@ export const ModuleFace = ({
                             <PowerFace module={module} rackWidth={rackWidth} />
                         )}
 
-                        {/* Vents: Horizontal Lines */}
-                        {isVent && <VentFace />}
+                        {/* Accessories */}
+                        {module.type === 'accessory' && (
+                            <AccessoryFace module={module} rackWidth={rackWidth} />
+                        )}
                     </div>
                 </div>
             )}

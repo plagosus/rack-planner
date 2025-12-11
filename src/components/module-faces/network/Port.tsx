@@ -1,6 +1,6 @@
 
-export const Port = () => {
+export const Port = ({ className = "w-4 h-4" }: { className?: string }) => {
     return (
-        <div className="w-4 h-4 bg-black/80 rounded-[1px] border border-gray-600 shadow-inner"></div>
+        <div className={`bg-black/80 rounded-[1px] border border-gray-600 shadow-inner ${className}`}></div>
     );
 };
