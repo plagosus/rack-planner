@@ -6,42 +6,40 @@ export const calculateOffThreshold = (totalDrives: number) => {
 };
 
 export const useDriveLedMode = (forceOff: boolean = false) => {
-    const [mode, setMode] = useState<'off' | 'idle' | 'reading'>('idle');
+    const [internalMode, setInternalMode] = useState<'idle' | 'reading'>('idle');
     const [isAmberOn, setIsAmberOn] = useState(false);
+
+    const mode = forceOff ? 'off' : internalMode;
 
     // Mode switching logic
     useEffect(() => {
-        if (forceOff) {
-            setMode('off');
-            return;
-        }
-
-        if (mode === 'off') return;
+        if (forceOff) return;
 
         let timeoutId: ReturnType<typeof setTimeout>;
 
-        if (mode === 'idle') {
+        // If explicitly in off state (not forced), we shouldn't be here if we only use internalMode 'idle' | 'reading'
+        // But for safety/completeness of logic flow:
+
+        if (internalMode === 'idle') {
             // Stay in idle for 5-20 seconds
             const duration = Math.random() * 25000 + 5000;
             timeoutId = setTimeout(() => {
-                setMode('reading');
+                setInternalMode('reading');
             }, duration);
-        } else if (mode === 'reading') {
-            // Stay in reading for up to 10 seconds (using 2-10s range for better effect)
+        } else if (internalMode === 'reading') {
+            // Stay in reading for up to 10 seconds
             const duration = Math.random() * 8000 + 2000;
             timeoutId = setTimeout(() => {
-                setMode('idle');
+                setInternalMode('idle');
             }, duration);
         }
 
         return () => clearTimeout(timeoutId);
-    }, [mode, forceOff]);
+    }, [internalMode, forceOff]);
 
-    // Blinking logic (only active in 'reading' mode)
     // Blinking logic (only active in 'reading' mode)
     useEffect(() => {
         if (mode !== 'reading') {
-            setIsAmberOn(false);
             return;
         }
 
@@ -60,5 +58,8 @@ export const useDriveLedMode = (forceOff: boolean = false) => {
         return () => clearTimeout(timeoutId);
     }, [mode]);
 
-    return { mode, isAmberOn };
+    return {
+        mode,
+        isAmberOn: mode === 'reading' && isAmberOn,
+    };
 };

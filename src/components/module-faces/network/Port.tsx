@@ -49,13 +49,7 @@ export const Port = ({
 
     // Blinking logic for Amber LED (Active mode)
     useEffect(() => {
-        if (!isPowered) {
-            setIsAmberOn(false);
-            return;
-        }
-
-        if (status !== 'active') {
-            setIsAmberOn(false);
+        if (!isPowered || status !== 'active') {
             return;
         }
 
@@ -91,7 +85,7 @@ export const Port = ({
                     {/* Amber LED: Blinking when active, Off otherwise */}
                     <div
                         className={`w-0.75 h-0.75 rounded-[0.5px] transition-colors duration-50 ${
-                            isPowered && isAmberOn
+                            isPowered && status === 'active' && isAmberOn
                                 ? 'bg-amber-500/40 shadow-[0_0_2px_rgba(245,158,11,0.6)]'
                                 : 'bg-amber-900/60'
                         }`}
