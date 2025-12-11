@@ -33,7 +33,7 @@ export const AccessoryFace = ({
 
     // Default to Vent if it seems like a vent, or if generic accessory
     if (name.includes('vent')) {
-        return <VentFace />;
+        return <VentFace uSize={module.uSize} />;
     }
 
     return null;

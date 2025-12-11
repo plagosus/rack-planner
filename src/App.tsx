@@ -69,9 +69,9 @@ const PREDEFINED_MODULES: RackModule[] = [
         type: 'accessory',
         color: 'bg-neutral-800',
     },
-    { id: 'vent-1u', name: 'Vent 1U', uSize: 1, type: 'accessory', color: 'bg-slate-700' },
-    { id: 'vent-2u', name: 'Vent 2U', uSize: 2, type: 'accessory', color: 'bg-slate-700' },
-    { id: 'vent-3u', name: 'Vent 3U', uSize: 3, type: 'accessory', color: 'bg-slate-700' },
+    { id: 'vent-1u', name: '1U Vent', uSize: 1, type: 'accessory', color: 'bg-slate-700' },
+    { id: 'vent-2u', name: '2U Vent', uSize: 2, type: 'accessory', color: 'bg-slate-700' },
+    { id: 'vent-3u', name: '3U Vent', uSize: 3, type: 'accessory', color: 'bg-slate-700' },
     { id: 'shelf', name: 'Shelf', uSize: 1, type: 'accessory', color: 'bg-slate-800' },
     {
         id: 'rpi-mount',
