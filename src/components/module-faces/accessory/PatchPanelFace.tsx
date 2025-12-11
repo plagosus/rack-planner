@@ -17,12 +17,11 @@ export const PatchPanelFace = ({
                 {Array.from({ length: portCount }).map((_, i) => (
                     <div key={i} className="flex flex-col items-center gap-2 w-full">
                         {/* White Label */}
-                        <div className="w-[80%] h-1.5 bg-white/70 rounded-[1px] shadow-sm"></div>
-                        {/* Port */}
-                        <Port
-                            className="w-6.25 h-6.25"
-                            isPowered={isPowered}
-                        />
+                        <div className="w-[75%] h-1.5 bg-white/70 rounded-[1px] shadow-sm"></div>
+                        {/* Keystone */}
+                        <div className="w-[85%] aspect-square bg-black rounded-[2px] flex items-center justify-center">
+                            <Port isPowered={isPowered} />
+                        </div>
                     </div>
                 ))}
             </div>
