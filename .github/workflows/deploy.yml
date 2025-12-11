@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - main  # Set this to 'master' if your default branch is master
+      - main
 
 jobs:
   web-deploy:
