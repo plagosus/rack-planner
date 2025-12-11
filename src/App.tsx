@@ -382,19 +382,35 @@ export default function RackPlanner() {
 
         if (editingModuleId) {
             // Update existing
+            const updatedModuleData = {
+                name: customName,
+                uSize: customU,
+                type: customType,
+                color: customColor,
+                image: customImage || undefined,
+            };
+
             const updatedLibrary = customLibrary.map((mod) =>
                 mod.id === editingModuleId
-                    ? {
-                          ...mod,
-                          name: customName,
-                          uSize: customU,
-                          type: customType,
-                          color: customColor,
-                          image: customImage || undefined,
-                      }
+                    ? { ...mod, ...updatedModuleData }
                     : mod
             );
             setCustomLibrary(updatedLibrary);
+
+            // Update instances in rack
+            const updatedRackSlots = rackSlots.map((slot) => {
+                if (slot.module && slot.module.id === editingModuleId) {
+                    return {
+                        ...slot,
+                        module: {
+                            ...slot.module,
+                            ...updatedModuleData,
+                        },
+                    };
+                }
+                return slot;
+            });
+            setRackSlots(updatedRackSlots);
         } else {
             // Create new
             const newMod: RackModule = {
