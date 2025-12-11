@@ -1,6 +1,12 @@
 import type { RackWidth } from '../../../types';
 
-export const PDUFace = ({ rackWidth = '19inch', isPowered = true }: { rackWidth?: RackWidth; isPowered?: boolean }) => {
+export const PDUFace = ({
+    rackWidth = '19inch',
+    isPowered = true,
+}: {
+    rackWidth?: RackWidth;
+    isPowered?: boolean;
+}) => {
     const outletCount = rackWidth === '10inch' ? 4 : 10;
 
     return (
@@ -20,7 +26,9 @@ export const PDUFace = ({ rackWidth = '19inch', isPowered = true }: { rackWidth?
 
                 {/* Indicator LED */}
                 <div className="flex flex-col items-center gap-1">
-                    <div className={`w-2 h-2 rounded-full ${isPowered ? 'bg-red-500 shadow-[0_0_8px_2px_rgba(239,68,68,0.6)] animate-pulse' : 'bg-red-900/50'}`}></div>
+                    <div
+                        className={`w-2 h-2 rounded-full ${isPowered ? 'bg-red-500 shadow-[0_0_8px_2px_rgba(239,68,68,0.6)] animate-pulse' : 'bg-red-900/50'}`}
+                    ></div>
                     <span className="text-[6px] text-gray-400 font-mono tracking-wider">PWR</span>
                 </div>
             </div>

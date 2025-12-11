@@ -1,4 +1,3 @@
-
 export const ShelfFace = () => {
     return (
         <div className="w-full h-full relative">

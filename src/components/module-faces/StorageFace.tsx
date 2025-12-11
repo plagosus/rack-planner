@@ -3,7 +3,6 @@ import { Nas1u35Face } from './storage/Nas1u35Face';
 import { Nas2u35Face } from './storage/Nas2u35Face';
 import { Nas2u25Face } from './storage/Nas2u25Face';
 
-
 export const StorageFace = ({
     module,
     rackWidth = '19inch',
@@ -27,4 +26,3 @@ export const StorageFace = ({
 
     return <div className="text-gray-400 text-xs">Unknown Storage Type</div>;
 };
-

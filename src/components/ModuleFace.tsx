@@ -27,10 +27,10 @@ export const ModuleFace = ({
             style={
                 hasImage
                     ? {
-                        backgroundImage: `url(${module.image})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }
+                          backgroundImage: `url(${module.image})`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                      }
                     : {}
             }
         >
@@ -43,24 +43,38 @@ export const ModuleFace = ({
                     {/* Visual Features based on Type */}
                     <div className="flex gap-2 w-full justify-center">
                         {/* Networking: Ports */}
-                        {module.type === 'network' && <NetworkFace module={module} isPowered={isPowered} />}
+                        {module.type === 'network' && (
+                            <NetworkFace module={module} isPowered={isPowered} />
+                        )}
 
                         {/* Server: Indicators or Drive Bays */}
                         {module.type === 'server' && <ServerFace isPowered={isPowered} />}
 
                         {/* Storage: Drive Arrays */}
                         {module.type === 'storage' && (
-                            <StorageFace module={module} rackWidth={rackWidth} isPowered={isPowered} />
+                            <StorageFace
+                                module={module}
+                                rackWidth={rackWidth}
+                                isPowered={isPowered}
+                            />
                         )}
 
                         {/* Power: Switch/Outlets */}
                         {module.type === 'power' && (
-                            <PowerFace module={module} rackWidth={rackWidth} isPowered={isPowered} />
+                            <PowerFace
+                                module={module}
+                                rackWidth={rackWidth}
+                                isPowered={isPowered}
+                            />
                         )}
 
                         {/* Accessories */}
                         {module.type === 'accessory' && (
-                            <AccessoryFace module={module} rackWidth={rackWidth} isPowered={isPowered} />
+                            <AccessoryFace
+                                module={module}
+                                rackWidth={rackWidth}
+                                isPowered={isPowered}
+                            />
                         )}
                     </div>
                 </div>

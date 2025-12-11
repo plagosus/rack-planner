@@ -1,4 +1,3 @@
-
 export const CableManagementFace = () => {
     return (
         <div className="w-full h-full flex items-center justify-center px-4">

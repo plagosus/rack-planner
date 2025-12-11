@@ -6,7 +6,9 @@ export const UPSFace = ({ isPowered = true }: { isPowered?: boolean }) => {
                 <div className="w-24 h-10 bg-black rounded border-2 border-gray-600 flex items-center justify-center relative overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.8)]">
                     {/* Screen Content - Glowing Blue text */}
                     {isPowered ? (
-                        <div className={`text-[10px] font-mono text-blue-400 drop-shadow-[0_0_2px_rgba(59,130,246,0.8)] flex flex-col items-center leading-tight opacity-90`}>
+                        <div
+                            className={`text-[10px] font-mono text-blue-400 drop-shadow-[0_0_2px_rgba(59,130,246,0.8)] flex flex-col items-center leading-tight opacity-90`}
+                        >
                             <span>OUTPUT</span>
                             <span className="text-sm font-bold">230V</span>
                         </div>
@@ -22,7 +24,9 @@ export const UPSFace = ({ isPowered = true }: { isPowered?: boolean }) => {
             <div className="flex items-center gap-4 z-10">
                 <div className="flex gap-2">
                     <div className="flex flex-col items-center gap-1">
-                        <div className={`w-1.5 h-1.5 rounded-full ${isPowered ? 'bg-green-500 shadow-[0_0_4px_2px_rgba(34,197,94,0.4)] animate-pulse' : 'bg-green-900/50'}`}></div>
+                        <div
+                            className={`w-1.5 h-1.5 rounded-full ${isPowered ? 'bg-green-500 shadow-[0_0_4px_2px_rgba(34,197,94,0.4)] animate-pulse' : 'bg-green-900/50'}`}
+                        ></div>
                         <span className="text-[5px] text-gray-500 uppercase">Line</span>
                     </div>
                     <div className="flex flex-col items-center gap-1">

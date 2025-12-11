@@ -1,39 +1,39 @@
 name: Build and Deploy
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  web-deploy:
-    name: 🎉 Deploy
-    runs-on: ubuntu-latest
-    steps:
-      # 1. Check out the repository code
-      - name: 🚚 Get latest code
-        uses: actions/checkout@v4
+    web-deploy:
+        name: 🎉 Deploy
+        runs-on: ubuntu-latest
+        steps:
+            # 1. Check out the repository code
+            - name: 🚚 Get latest code
+              uses: actions/checkout@v4
 
-      # 2. Install Node.js
-      - name: Use Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+            # 2. Install Node.js
+            - name: Use Node.js 20
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
 
-      # 3. Install dependencies and Build
-      - name: 🔨 Build Project
-        run: |
-          npm install
-          npm run build
+            # 3. Install dependencies and Build
+            - name: 🔨 Build Project
+              run: |
+                  npm install
+                  npm run build
 
-      # 4. Deploy the build folder via FTP
-      - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          # Vite outputs to 'dist' by default
-          local-dir: ./dist/
-          # server path for deployment
-          server-dir: ./
+            # 4. Deploy the build folder via FTP
+            - name: 📂 Sync files
+              uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+              with:
+                  server: ${{ secrets.FTP_SERVER }}
+                  username: ${{ secrets.FTP_USERNAME }}
+                  password: ${{ secrets.FTP_PASSWORD }}
+                  # Vite outputs to 'dist' by default
+                  local-dir: ./dist/
+                  # server path for deployment
+                  server-dir: ./
