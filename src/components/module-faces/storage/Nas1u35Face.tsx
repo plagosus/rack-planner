@@ -1,10 +1,11 @@
 import { type RackWidth } from '../../../types';
 import { DriveBay35 } from './DriveBay35';
+import { calculateOffThreshold } from './utils';
 
 export const Nas1u35Face = ({ rackWidth }: { rackWidth?: RackWidth }) => {
     const drivesPerRow = rackWidth === '10inch' ? 2 : 4;
     const totalDrives = drivesPerRow;
-    const offThreshold = Math.floor(totalDrives * 0.8);
+    const offThreshold = calculateOffThreshold(totalDrives);
 
     return (
         <div className="flex flex-col items-center justify-evenly h-full w-full gap-2 px-2">

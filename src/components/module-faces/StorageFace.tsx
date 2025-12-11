@@ -2,7 +2,7 @@ import type { RackModule, RackWidth } from '../../types';
 import { Nas1u35Face } from './storage/Nas1u35Face';
 import { Nas2u35Face } from './storage/Nas2u35Face';
 import { Nas2u25Face } from './storage/Nas2u25Face';
-import { Nas1u25Face } from './storage/Nas1u25Face';
+
 
 export const StorageFace = ({
     module,
@@ -21,10 +21,6 @@ export const StorageFace = ({
 
     if (module.id === 'nas-2u-25') {
         return <Nas2u25Face rackWidth={rackWidth} />;
-    }
-
-    if (module.id === 'nas-1u-25') {
-        return <Nas1u25Face />;
     }
 
     return <div className="text-gray-400 text-xs">Unknown Storage Type</div>;
