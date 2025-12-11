@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Server, Search, Moon, Sun, Trash2, Upload, GripVertical, Move, Pencil } from 'lucide-react';
+import { Server, Search, Moon, Sun, Trash2, Upload, GripVertical, Move, Pencil, Power } from 'lucide-react';
 import type { ModuleType, RackModule, RackSettings, RackSlot, RackWidth } from './types';
 import { ModuleFace } from './components/ModuleFace';
 import { COLOR_OPTIONS } from './constants/colors';
@@ -470,17 +470,10 @@ export default function RackPlanner() {
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setAreAnimationsEnabled(!areAnimationsEnabled)}
-                            className={`p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors ${areAnimationsEnabled ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}`}
+                            className={`p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors ${areAnimationsEnabled ? 'text-green-500' : 'text-gray-400'}`}
                             title={areAnimationsEnabled ? "Disable Animations" : "Enable Animations"}
                         >
-                            {areAnimationsEnabled ? (
-                                <div className="relative">
-                                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                                    <Move size={18} />
-                                </div>
-                            ) : (
-                                <Move size={18} />
-                            )}
+                            <Power size={18} />
                         </button>
                         <button
                             onClick={() => setIsDarkMode(!isDarkMode)}
@@ -643,7 +636,7 @@ export default function RackPlanner() {
                                                                 rackWidth={
                                                                     rackSettings.widthStandard
                                                                 }
-                                                                isPowered={true}
+                                                                isPowered={areAnimationsEnabled}
                                                                 animationsEnabled={areAnimationsEnabled}
                                                             />
 

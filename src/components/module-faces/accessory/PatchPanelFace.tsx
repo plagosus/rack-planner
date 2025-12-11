@@ -1,7 +1,15 @@
 import { Port } from '../network/Port';
 import { type RackWidth } from '../../../types';
 
-export const PatchPanelFace = ({ rackWidth }: { rackWidth?: RackWidth }) => {
+export const PatchPanelFace = ({
+    rackWidth,
+    animationsEnabled,
+    isPowered,
+}: {
+    rackWidth?: RackWidth;
+    animationsEnabled?: boolean;
+    isPowered?: boolean;
+}) => {
     const is10Inch = rackWidth === '10inch';
     const portCount = is10Inch ? 12 : 24;
 
@@ -13,7 +21,11 @@ export const PatchPanelFace = ({ rackWidth }: { rackWidth?: RackWidth }) => {
                         {/* White Label */}
                         <div className="w-[80%] h-2 bg-white/70 rounded-[1px] shadow-sm"></div>
                         {/* Port */}
-                        <Port className="w-5 h-5" />
+                        <Port
+                            className="w-5 h-5"
+                            animationsEnabled={animationsEnabled}
+                            isPowered={isPowered}
+                        />
                     </div>
                 ))}
             </div>

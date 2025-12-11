@@ -27,7 +27,7 @@ export const AccessoryFace = ({
     }
 
     if (id === 'patch-panel' || name.includes('patch panel')) {
-        return <PatchPanelFace rackWidth={rackWidth} />;
+        return <PatchPanelFace rackWidth={rackWidth} animationsEnabled={animationsEnabled} isPowered={isPowered} />;
     }
 
     if (id === 'shelf' || name.includes('shelf')) {

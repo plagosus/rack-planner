@@ -4,8 +4,7 @@ import { calculateOffThreshold } from './utils';
 
 export const Nas1u35Face = ({ rackWidth, animationsEnabled, isPowered }: { rackWidth?: RackWidth; animationsEnabled?: boolean; isPowered?: boolean }) => {
     const drivesPerRow = rackWidth === '10inch' ? 2 : 4;
-    const totalDrives = drivesPerRow;
-    const offThreshold = calculateOffThreshold(totalDrives);
+    const offThreshold = calculateOffThreshold(drivesPerRow);
 
     return (
         <div className="flex flex-col items-center justify-evenly h-full w-full gap-2 px-2">

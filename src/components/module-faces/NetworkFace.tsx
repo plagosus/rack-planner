@@ -10,16 +10,16 @@ export const NetworkFace = ({ module, animationsEnabled, isPowered }: { module: 
     const id = module.id.toLowerCase();
 
     if (id === 'switch-24' || name.includes('24-port')) {
-        return <Switch24Port animationsEnabled={animationsEnabled} />;
+        return <Switch24Port animationsEnabled={animationsEnabled} isPowered={isPowered} />;
     }
     if (id === 'switch-16' || name.includes('16-port')) {
-        return <Switch16Port animationsEnabled={animationsEnabled} />;
+        return <Switch16Port animationsEnabled={animationsEnabled} isPowered={isPowered} />;
     }
     if (id === 'switch-8' || name.includes('8-port')) {
-        return <Switch8Port animationsEnabled={animationsEnabled} />;
+        return <Switch8Port animationsEnabled={animationsEnabled} isPowered={isPowered} />;
     }
     if (id === 'switch-5' || name.includes('5-port')) {
-        return <Switch5Port animationsEnabled={animationsEnabled} />;
+        return <Switch5Port animationsEnabled={animationsEnabled} isPowered={isPowered} />;
     }
 
     // Default Fallback (Generic networking look - maybe flashing lights)
