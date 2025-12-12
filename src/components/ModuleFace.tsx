@@ -27,10 +27,10 @@ export const ModuleFace = ({
             style={
                 hasImage
                     ? {
-                          backgroundImage: `url(${module.image})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                      }
+                        backgroundImage: `url(${module.image})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                    }
                     : {}
             }
         >
@@ -48,7 +48,11 @@ export const ModuleFace = ({
                         )}
 
                         {/* Server: Indicators or Drive Bays */}
-                        {module.type === 'server' && <ServerFace isPowered={isPowered} />}
+                        {module.type === 'server' && (
+                            <div className="w-full h-full">
+                                <ServerFace module={module} isPowered={isPowered} rackWidth={rackWidth} />
+                            </div>
+                        )}
 
                         {/* Storage: Drive Arrays */}
                         {module.type === 'storage' && (

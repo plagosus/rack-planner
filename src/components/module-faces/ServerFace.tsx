@@ -1,31 +1,26 @@
-export const ServerFace = ({ isPowered }: { isPowered?: boolean }) => {
-    return (
-        <div className="flex items-center gap-2">
-            <div className="flex flex-col gap-0.5">
-                {/* Power LED */}
-                <div
-                    className={`w-1 h-1 rounded-full ${
-                        isPowered
-                            ? 'bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.5)]'
-                            : 'bg-green-900/30'
-                    }`}
-                ></div>
-                {/* Activity LED */}
-                <div
-                    className={`w-1 h-1 rounded-full ${
-                        isPowered ? 'bg-blue-500' : 'bg-blue-900/30'
-                    } ${isPowered ? 'animate-pulse' : ''}`}
-                ></div>
-            </div>
-            <div className="w-20 h-1.5 bg-black/50 rounded-full"></div>
-            <div className="flex gap-0.5">
-                {[1, 2, 3].map((i) => (
-                    <div
-                        key={i}
-                        className="w-4 h-6 border border-black/30 bg-black/10 rounded-sm"
-                    ></div>
-                ))}
-            </div>
-        </div>
-    );
+import { type RackModule, type RackWidth } from '../../types';
+import { Server1U } from './server/Server1U';
+import { Server2U } from './server/Server2U';
+import { Server3U } from './server/Server3U';
+import { Server4U } from './server/Server4U';
+
+interface ServerFaceProps {
+    module: RackModule;
+    isPowered?: boolean;
+    rackWidth?: RackWidth;
+}
+
+export const ServerFace = ({ module, isPowered, rackWidth }: ServerFaceProps) => {
+    const uSize = module.uSize || 1;
+
+    switch (uSize) {
+        case 2:
+            return <Server2U isPowered={isPowered} rackWidth={rackWidth} />;
+        case 3:
+            return <Server3U isPowered={isPowered} rackWidth={rackWidth} />;
+        case 4:
+            return <Server4U isPowered={isPowered} rackWidth={rackWidth} />;
+        default:
+            return <Server1U isPowered={isPowered} rackWidth={rackWidth} />;
+    }
 };
