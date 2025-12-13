@@ -1,14 +1,15 @@
 {
     "name": "rack-planner",
     "private": true,
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
         "format": "prettier --write .",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "publish:docker": "node -e \"const v=require('./package.json').version; const cmd = 'docker build -t brankko/rack-planner:'+v+' -t brankko/rack-planner:latest . && docker push brankko/rack-planner:'+v+' && docker push brankko/rack-planner:latest'; require('child_process').execSync(cmd, {stdio: 'inherit'})\""
     },
     "dependencies": {
         "lucide-react": "^0.556.0",
