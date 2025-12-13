@@ -8,7 +8,8 @@
         "build": "tsc -b && vite build",
         "lint": "eslint .",
         "format": "prettier --write .",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "publish:docker": "docker build -t brankko/rack-planner:1.0.0 -t brankko/rack-planner:latest . && docker push brankko/rack-planner:1.0.0 && docker push brankko/rack-planner:latest"
     },
     "dependencies": {
         "lucide-react": "^0.556.0",

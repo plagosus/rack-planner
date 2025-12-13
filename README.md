@@ -65,6 +65,47 @@ Lints the project files for any code quality issues.
 
 Runs a local server to preview the production build. This is useful for testing the production build before deploying it.
 
+## Docker
+
+You can run the application using Docker, either by building it locally or pulling the pre-built image.
+
+### Quick Start (Pre-built Image)
+
+If you just want to run the application without downloading the source code, you can pull the image from [Docker Hub](https://hub.docker.com/repository/docker/brankko/rack-planner):
+
+1.  Make sure you have Docker installed.
+2.  Run the following command:
+
+    ```bash
+    docker run -d -p 1019:80 brankko/rack-planner:latest
+    ```
+    *(You can change `1019` to any port you prefer, e.g., `-p 8080:80`)*
+
+3.  Access the application at [http://localhost:1019](http://localhost:1019).
+
+### Running Locally (From Source)
+
+If you have cloned the repository and want to build the Docker image yourself:
+
+1.  Make sure you have Docker installed and running.
+2.  Run the following command:
+
+    ```bash
+    docker-compose up --build -d
+    ```
+
+3.  Access the application at [http://localhost:1019](http://localhost:1019).
+
+### Publishing
+
+To publish the Docker image to a registry (e.g., Docker Hub), you can use the built-in script:
+
+```bash
+npm run publish:docker
+```
+
+This will build and push the image with tags `1.0.0` and `latest` to `brankko/rack-planner`. Ensure you are logged in (`docker login`) before running this.
+
 ## Accessing the Application
 
 Once you have the development server running with `npm run dev`, you can access the application by opening your web browser and navigating to [http://localhost:5173](http://localhost:5173).
