@@ -442,7 +442,7 @@ export default function RackPlanner() {
                         </div>
                         <h1 className="font-bold tracking-tight">
                             RackPlanner{' '}
-                            <span className="text-xs font-normal opacity-60 ml-1">Beta</span>
+                            <span className="text-xs font-normal opacity-60 ml-1">v{__APP_VERSION__}</span>
                         </h1>
                     </div>
 
@@ -552,9 +552,8 @@ export default function RackPlanner() {
                                             key={index}
                                             onDragOver={(e) => handleDragOver(e, index)}
                                             onDrop={(e) => handleDrop(e, index)}
-                                            className={`relative flex w-full transition-colors ${
-                                                isDragTarget ? 'bg-indigo-500/20 z-20' : ''
-                                            }`}
+                                            className={`relative flex w-full transition-colors ${isDragTarget ? 'bg-indigo-500/20 z-20' : ''
+                                                }`}
                                             style={{ height: isModulePart ? 0 : moduleHeight }} // Collapse covered slots
                                         >
                                             {/* Left Rail Indicators */}
@@ -571,33 +570,33 @@ export default function RackPlanner() {
  */}
                                                 {isModuleStart && slot.module
                                                     ? // Render multiple U numbers for multi-U items
-                                                      Array.from({ length: slot.module.uSize }).map(
-                                                          (_, i) => (
-                                                              <div
-                                                                  key={i}
-                                                                  style={{ height: U_PIXELS }}
-                                                                  className="relative flex items-center justify-center w-full"
-                                                              >
-                                                                  <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
-                                                                      {slot.uPosition - i}
-                                                                  </span>
-                                                                  <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
-                                                              </div>
-                                                          )
-                                                      )
+                                                    Array.from({ length: slot.module.uSize }).map(
+                                                        (_, i) => (
+                                                            <div
+                                                                key={i}
+                                                                style={{ height: U_PIXELS }}
+                                                                className="relative flex items-center justify-center w-full"
+                                                            >
+                                                                <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
+                                                                    {slot.uPosition - i}
+                                                                </span>
+                                                                <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
+                                                            </div>
+                                                        )
+                                                    )
                                                     : !isOccupied &&
-                                                      !isModulePart && (
-                                                          // Render single U number for empty slot
-                                                          <div
-                                                              style={{ height: U_PIXELS }}
-                                                              className="relative flex items-center justify-center w-full"
-                                                          >
-                                                              <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
-                                                                  {slot.uPosition}
-                                                              </span>
-                                                              <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
-                                                          </div>
-                                                      )}
+                                                    !isModulePart && (
+                                                        // Render single U number for empty slot
+                                                        <div
+                                                            style={{ height: U_PIXELS }}
+                                                            className="relative flex items-center justify-center w-full"
+                                                        >
+                                                            <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
+                                                                {slot.uPosition}
+                                                            </span>
+                                                            <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
+                                                        </div>
+                                                    )}
                                             </div>
 
                                             {/* Slot Content */}
@@ -679,7 +678,7 @@ export default function RackPlanner() {
                                                                                 ) {
                                                                                     newSlots[i] = {
                                                                                         ...newSlots[
-                                                                                            i
+                                                                                        i
                                                                                         ],
                                                                                         moduleId:
                                                                                             null,
@@ -719,31 +718,31 @@ export default function RackPlanner() {
                                             >
                                                 {isModuleStart && slot.module
                                                     ? Array.from({ length: slot.module.uSize }).map(
-                                                          (_, i) => (
-                                                              <div
-                                                                  key={i}
-                                                                  style={{ height: U_PIXELS }}
-                                                                  className="relative flex items-center justify-center w-full"
-                                                              >
-                                                                  <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
-                                                                      {slot.uPosition - i}
-                                                                  </span>
-                                                                  <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
-                                                              </div>
-                                                          )
-                                                      )
+                                                        (_, i) => (
+                                                            <div
+                                                                key={i}
+                                                                style={{ height: U_PIXELS }}
+                                                                className="relative flex items-center justify-center w-full"
+                                                            >
+                                                                <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
+                                                                    {slot.uPosition - i}
+                                                                </span>
+                                                                <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
+                                                            </div>
+                                                        )
+                                                    )
                                                     : !isOccupied &&
-                                                      !isModulePart && (
-                                                          <div
-                                                              style={{ height: U_PIXELS }}
-                                                              className="relative flex items-center justify-center w-full"
-                                                          >
-                                                              <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
-                                                                  {slot.uPosition}
-                                                              </span>
-                                                              <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
-                                                          </div>
-                                                      )}
+                                                    !isModulePart && (
+                                                        <div
+                                                            style={{ height: U_PIXELS }}
+                                                            className="relative flex items-center justify-center w-full"
+                                                        >
+                                                            <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
+                                                                {slot.uPosition}
+                                                            </span>
+                                                            <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
+                                                        </div>
+                                                    )}
                                             </div>
                                         </div>
                                     );
@@ -856,31 +855,31 @@ export default function RackPlanner() {
                                                                 {module.id.startsWith(
                                                                     'custom-'
                                                                 ) && (
-                                                                    <div className="flex items-center gap-1">
-                                                                        <button
-                                                                            onClick={(e) =>
-                                                                                handleEditModule(
-                                                                                    e,
-                                                                                    module
-                                                                                )
-                                                                            }
-                                                                            className="text-gray-400 hover:text-indigo-500"
-                                                                        >
-                                                                            <Pencil size={12} />
-                                                                        </button>
-                                                                        <button
-                                                                            onClick={(e) =>
-                                                                                deleteCustomModule(
-                                                                                    e,
-                                                                                    module.id
-                                                                                )
-                                                                            }
-                                                                            className="text-gray-400 hover:text-red-500"
-                                                                        >
-                                                                            <Trash2 size={12} />
-                                                                        </button>
-                                                                    </div>
-                                                                )}
+                                                                        <div className="flex items-center gap-1">
+                                                                            <button
+                                                                                onClick={(e) =>
+                                                                                    handleEditModule(
+                                                                                        e,
+                                                                                        module
+                                                                                    )
+                                                                                }
+                                                                                className="text-gray-400 hover:text-indigo-500"
+                                                                            >
+                                                                                <Pencil size={12} />
+                                                                            </button>
+                                                                            <button
+                                                                                onClick={(e) =>
+                                                                                    deleteCustomModule(
+                                                                                        e,
+                                                                                        module.id
+                                                                                    )
+                                                                                }
+                                                                                className="text-gray-400 hover:text-red-500"
+                                                                            >
+                                                                                <Trash2 size={12} />
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
                                                             </div>
                                                         </div>
                                                     ))}
@@ -892,10 +891,10 @@ export default function RackPlanner() {
                                     {Object.values(getGroupedModules()).every(
                                         (g) => g.length === 0
                                     ) && (
-                                        <div className="text-center p-4 text-gray-500 text-sm">
-                                            No items found
-                                        </div>
-                                    )}
+                                            <div className="text-center p-4 text-gray-500 text-sm">
+                                                No items found
+                                            </div>
+                                        )}
                                 </div>
                             </div>
                         )}
