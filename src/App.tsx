@@ -23,6 +23,14 @@ const WIDTH_19_INCH = Math.round(19 * PIXELS_PER_INCH);
 const WIDTH_10_INCH = Math.round(10 * PIXELS_PER_INCH);
 const RAIL_WIDTH = Math.round(0.625 * PIXELS_PER_INCH);
 
+// Add window augmentation for Google Analytics
+declare global {
+    interface Window {
+        dataLayer: any[];
+        gtag: (...args: any[]) => void;
+    }
+}
+
 export default function RackPlanner() {
     // --- State ---
     const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -96,6 +104,31 @@ export default function RackPlanner() {
     useEffect(() => {
         localStorage.setItem('animationsEnabled', String(areAnimationsEnabled));
     }, [areAnimationsEnabled]);
+
+    // Handle Google Analytics
+    useEffect(() => {
+        const gaId = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
+
+        if (gaId && typeof window !== 'undefined') {
+            // Load the script
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+            document.head.appendChild(script);
+
+            // Initialize dataLayer
+            window.dataLayer = window.dataLayer || [];
+            function gtag(...args: any[]) {
+                window.dataLayer.push(args);
+            }
+            window.gtag = gtag;
+
+            gtag('js', new Date());
+            gtag('config', gaId);
+
+            console.log('Google Analytics initialized with ID:', gaId);
+        }
+    }, []);
 
     // Handle Responsive Scaling
     useEffect(() => {
