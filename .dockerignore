@@ -6,3 +6,4 @@ dist
 .DS_Store
 Dockerfile
 docker-compose.yml
+.github
