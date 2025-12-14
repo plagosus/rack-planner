@@ -2,6 +2,12 @@ name: Publish Docker Image
 
 on:
   workflow_dispatch:
+    inputs:
+      force_republish:
+        description: 'Force republish existing version (overwrite Docker tag)'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -23,9 +29,13 @@ jobs:
       - name: Determine Version
         id: determine_version
         run: |
+          FORCE="${{ inputs.force_republish }}"
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           
-          if git rev-parse "v$CURRENT_VERSION" >/dev/null 2>&1; then
+          if [ "$FORCE" = "true" ]; then
+            echo "Force republish request. Using current version v$CURRENT_VERSION without bumping."
+            echo "VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+          elif git rev-parse "v$CURRENT_VERSION" >/dev/null 2>&1; then
             echo "Tag v$CURRENT_VERSION already exists. Bumping patch version..."
             
             # Bump version and push
@@ -64,5 +74,6 @@ jobs:
           body: "Release for version ${{ env.VERSION }}"
           draft: false
           prerelease: false
+          allowUpdates: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
