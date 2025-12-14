@@ -39,7 +39,7 @@ jobs:
             echo "Tag v$CURRENT_VERSION already exists. Bumping patch version..."
             
             # Bump version and push
-            npm version patch -m "chore: bump version to %s [skip ci]"
+            npm version patch -m "chore: bump version to %s"
             git push --follow-tags
             
             # Get new version
@@ -77,3 +77,11 @@ jobs:
           allowUpdates: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger Deployment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Waiting for git propagation..."
+          sleep 5
+          gh workflow run deploy.yml --ref main
