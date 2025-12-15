@@ -180,8 +180,34 @@ export default function RackPlanner() {
             }
 
             if (savedSlots) {
-                const parsedSlots = JSON.parse(savedSlots);
-                if (parsedSlots.length > 0) {
+                const parsedSlots: RackSlot[] = JSON.parse(savedSlots);
+
+                // MIGRATION: Check if we need to migrate from 1U resolution to 0.5U resolution
+                // Old format: length === initialHeight
+                // New format: length === initialHeight * 2
+                if (parsedSlots.length === initialHeight) {
+                    console.log("Migrating rack slots to 0.5U resolution...");
+                    const newSlots: RackSlot[] = [];
+
+                    parsedSlots.forEach(oldSlot => {
+                        // Create 2 new slots for each old slot
+                        // 1. Top Half (Original U position)
+                        newSlots.push({
+                            uPosition: oldSlot.uPosition,
+                            moduleId: oldSlot.moduleId,
+                            module: oldSlot.module
+                        });
+
+                        // 2. Bottom Half (U position - 0.5)
+                        newSlots.push({
+                            uPosition: oldSlot.uPosition - 0.5,
+                            moduleId: oldSlot.moduleId,
+                            module: oldSlot.module
+                        });
+                    });
+
+                    setRackSlots(newSlots);
+                } else if (parsedSlots.length > 0) {
                     setRackSlots(parsedSlots);
                 } else {
                     initializeRack(initialHeight);
@@ -209,8 +235,14 @@ export default function RackPlanner() {
 
     // Initializer
     const initializeRack = (size: number) => {
-        const slots: RackSlot[] = Array.from({ length: size }, (_, i) => ({
-            uPosition: size - i,
+        // Size is in U, but we need 2x slots for 0.5U resolution
+        const numSlots = size * 2;
+        const slots: RackSlot[] = Array.from({ length: numSlots }, (_, i) => ({
+            // If size=10 (20 slots)
+            // i=0 -> 10
+            // i=1 -> 9.5
+            // i=2 -> 9
+            uPosition: size - (i * 0.5),
             moduleId: null,
         }));
         setRackSlots(slots);
@@ -220,32 +252,36 @@ export default function RackPlanner() {
     const updateRackHeight = (newHeight: number) => {
         if (isNaN(newHeight) || newHeight < 4 || newHeight > 52) return;
 
-        const currentHeight = rackSlots.length;
-        if (newHeight === currentHeight) return;
+        const currentSlots = rackSlots.length;
+        const targetSlots = newHeight * 2; // 0.5U resolution
+
+        if (targetSlots === currentSlots) return;
 
         let updatedSlots: RackSlot[];
 
-        if (newHeight > currentHeight) {
-            // Growing: Add slots to the TOP (beginning of array)
-            const uDiff = newHeight - currentHeight;
-            const newSlots: RackSlot[] = Array.from({ length: uDiff }, (_, i) => ({
-                uPosition: newHeight - i, // New higher U numbers
+        if (targetSlots > currentSlots) {
+            // Growing: Add slots to the TOP
+            const slotsToAdd = targetSlots - currentSlots;
+
+            // Generate new slots starting from newHeight down to (oldTop + 0.5)
+            const newSlots: RackSlot[] = Array.from({ length: slotsToAdd }, (_, i) => ({
+                uPosition: newHeight - (i * 0.5),
                 moduleId: null,
             }));
             updatedSlots = [...newSlots, ...rackSlots];
         } else {
-            // Shrinking: Remove from TOP (beginning of array)
-            const uDiff = currentHeight - newHeight;
-            const slotsToRemove = rackSlots.slice(0, uDiff);
+            // Shrinking: Remove from TOP
+            const slotsToRemoveCount = currentSlots - targetSlots;
+            const slotsToRemove = rackSlots.slice(0, slotsToRemoveCount);
 
             // Safety check
             const hasModules = slotsToRemove.some((s) => s.moduleId !== null);
             if (hasModules) {
-                if (!confirm(`Reducing size will remove modules in the top ${uDiff}U. Continue?`)) {
+                if (!confirm(`Reducing size will remove modules in the top ${slotsToRemoveCount / 2}U. Continue?`)) {
                     return; // Abort
                 }
             }
-            updatedSlots = rackSlots.slice(uDiff);
+            updatedSlots = rackSlots.slice(slotsToRemoveCount);
         }
 
         setRackSettings((prev) => ({ ...prev, heightU: newHeight }));
@@ -260,22 +296,26 @@ export default function RackPlanner() {
         moduleUSize: number,
         originalIndex?: number
     ): boolean => {
-        // Boundary Check: If top of module goes below index 0 (top of rack)
-        if (targetIndex - moduleUSize + 1 < 0) {
+        // Enforce 1U alignment for modules >= 1U
+        // 0.5U modules can be placed anywhere (Odd or Even)
+        if (moduleUSize >= 1 && targetIndex % 2 !== 0) return false;
+
+        // Collision Check (calculate needed first)
+        const slotsNeeded = moduleUSize * 2; // Resolution 0.5U
+
+        // Boundary Check: If bottom of module goes beyond rack bottom
+        if (targetIndex + slotsNeeded > rackSlots.length) {
             return false;
         }
 
-        // Collision Check
-        const slotsNeeded = moduleUSize;
         let originalModuleId: string | null = null;
-
         if (originalIndex !== undefined && rackSlots[originalIndex]) {
             originalModuleId = rackSlots[originalIndex].moduleId;
         }
 
         for (let i = 0; i < slotsNeeded; i++) {
-            const slotIndex = targetIndex - i;
-            if (slotIndex < 0) return false;
+            const slotIndex = targetIndex + i;
+            if (slotIndex >= rackSlots.length) return false;
 
             const slot = rackSlots[slotIndex];
             if (slot.moduleId !== null) {
@@ -307,9 +347,9 @@ export default function RackPlanner() {
         if (!draggedItem) return;
 
         const { module, originalIndex } = draggedItem;
-        const slotsNeeded = module.uSize;
+        const slotsNeeded = module.uSize * 2;
 
-        if (!checkCanDrop(targetIndex, slotsNeeded, originalIndex)) {
+        if (!checkCanDrop(targetIndex, module.uSize, draggedItem?.originalIndex)) {
             // Visual feedback is shown during drag, but if they drop anyway, we just cancel.
             // Optionally alert if you want, but silent fail is arguably better if UI provides red cue.
             setDraggedItem(null);
@@ -338,8 +378,8 @@ export default function RackPlanner() {
                 : `${module.id}-${Date.now()}`;
 
         for (let i = 0; i < slotsNeeded; i++) {
-            newSlots[targetIndex - i] = {
-                ...newSlots[targetIndex - i],
+            newSlots[targetIndex + i] = {
+                ...newSlots[targetIndex + i],
                 moduleId: instanceId,
                 module: module,
             };
@@ -579,47 +619,111 @@ export default function RackPlanner() {
 
                             {/* Rails Container */}
                             <div
-                                className="bg-gray-300 dark:bg-[#12151a] border-gray-400 dark:border-[#21262d] relative shadow-2xl flex flex-col shrink-0"
-                                style={{
-                                    borderLeftWidth: RAIL_WIDTH,
-                                    borderRightWidth: RAIL_WIDTH,
-                                }}
+                                className="flex flex-col relative w-full border-x border-gray-800 bg-[#1a1b26] shadow-2xl shrink-0 transition-all duration-300 ease-in-out"
                             >
                                 {rackSlots.map((slot, index) => {
                                     const isOccupied = slot.moduleId !== null;
-
-                                    // Helper: Is this slot the TOP-most slot of a module?
                                     const prevSlot = index > 0 ? rackSlots[index - 1] : null;
-                                    const isModuleStart =
-                                        isOccupied && prevSlot?.moduleId !== slot.moduleId;
-                                    const isModulePart = isOccupied && !isModuleStart;
+                                    const nextSlot = index < rackSlots.length - 1 ? rackSlots[index + 1] : null;
 
-                                    // Drag Over styling
+                                    // Module Logic
+                                    const isModuleStart = isOccupied && prevSlot?.moduleId !== slot.moduleId;
+
+                                    // 0.5U / Split Logic
+                                    const isEvenIndex = index % 2 === 0; // Top of a U
+
+                                    // Merging Logic for Empty Slots
+                                    // We merge two empty 0.5U slots into one 1U slot ONLY if they are a Top/Bottom pair (Even/Odd).
+                                    // If Top(Even) is empty AND Bottom(Odd) is empty -> Merge.
+
+                                    let shouldRender = true;
+                                    let renderedHeight = U_PIXELS; // Default 1U
+                                    let isMergedEmpty = false;
+
+                                    if (isOccupied) {
+                                        if (isModuleStart) {
+                                            renderedHeight = (slot.module?.uSize || 1) * U_PIXELS;
+                                        } else {
+                                            shouldRender = false; // Module parts are hidden/handled by start
+                                        }
+                                    } else {
+                                        // Empty Slot Logic
+                                        if (isEvenIndex) {
+                                            // Top Slot
+                                            const nextOccupied = nextSlot?.moduleId !== null;
+                                            if (!nextOccupied) {
+                                                // Both Top and Bottom are empty -> Merge
+                                                renderedHeight = U_PIXELS; // 1U
+                                                isMergedEmpty = true;
+                                            } else {
+                                                // Top is empty, Bottom is occupied -> Split look
+                                                renderedHeight = U_PIXELS / 2; // 0.5U
+                                            }
+                                        } else {
+                                            // Bottom Slot (Odd)
+                                            const prevOccupied = prevSlot?.moduleId !== null;
+                                            if (!prevOccupied) {
+                                                // Top was empty, so it handled this slot in a merge -> Skip
+                                                shouldRender = false;
+                                            } else {
+                                                // Top was occupied, so this Bottom Empty slot is independent
+                                                renderedHeight = U_PIXELS / 2; // 0.5U
+                                            }
+                                        }
+                                    }
+
+                                    if (!shouldRender) return null;
+
+                                    // Drag visual logic (Keep as is, but consider 0.5U)
                                     const uSize = draggedItem?.module.uSize || 1;
+                                    const slotsNeeded = uSize * 2;
+
+                                    // Drag Over Logic
+                                    // With 0.5U support, we need precise drag targeting.
+                                    // If dragging 0.5U, we respect the exact dragOverIndex.
+                                    // If dragging 1U+, we might be snapping effectiveDragIndex to even.
+                                    // BUT, checkCanDrop enforces Even for 1U+. 
+                                    // So dragOverIndex might be Odd, but we want to visualize the snap to Even?
+                                    // Or does the UI expect user to mouse over Even?
+                                    // Let's stick to accurate feedback: If user hovers Odd with 1U, it's invalid (Red).
+                                    // So we don't snap effectiveDragIndex for validity, but maybe for visual alignment if we wanted to be helpful.
+                                    // For now, strict feedback:
+
+                                    const effectiveDragIndex = dragOverIndex; // No snapping, raw feedback
+
                                     const isDragTarget =
-                                        dragOverIndex !== null &&
-                                        index <= dragOverIndex &&
-                                        index > dragOverIndex - uSize;
-                                    // Only show text on the main hover slot
-                                    const isMainDragTarget = dragOverIndex === index;
+                                        effectiveDragIndex !== null &&
+                                        index >= effectiveDragIndex &&
+                                        index < effectiveDragIndex + slotsNeeded;
 
-                                    // Determine validity if it's a drag target
-                                    // Use checkCanDrop on the dragOverIndex, not current index (since highlight depends on master drop index)
-                                    // But wait, the loop runs for each slot.
-                                    // If I am highlighting slots 4 and 5 because dragOverIndex is 5 (and size is 2).
-                                    // I want to know if dropping at 5 is valid.
+                                    const isMainDragTarget = effectiveDragIndex === index;
+                                    const isValid = effectiveDragIndex !== null ? checkCanDrop(effectiveDragIndex, uSize, draggedItem?.originalIndex) : true;
 
-                                    const isValid = dragOverIndex !== null ? checkCanDrop(dragOverIndex, uSize, draggedItem?.originalIndex) : true;
-
-                                    // Styles
                                     const dragColorClass = isValid
-                                        ? 'bg-indigo-500/20 border-indigo-500' // Valid
-                                        : 'bg-red-500/20 border-red-500';      // Invalid
+                                        ? 'bg-indigo-500/20 border-indigo-500'
+                                        : 'bg-red-500/20 border-red-500';
 
-                                    // Calculate height if start
-                                    const moduleHeight = isModuleStart
-                                        ? (slot.module?.uSize || 1) * U_PIXELS
-                                        : U_PIXELS;
+                                    // For merged empty 1U, we might have a drag target that only covers HALF of it (e.g. dragging 0.5U into Top).
+                                    // This requires the merged block to potentially show a highlight on just half its area?
+                                    // CSS Grid/Flex overlay? 
+                                    // Actually, if we are interfering with a merged empty block, we might want to "Split" it visually during drag?
+                                    // That's complex. 
+                                    // Simple approach: The "IsDragTarget" highlights the SLOT div. 
+                                    // If the SLOT div is Merged 1U, and we highlight it... it highlights the whole 1U.
+                                    // If I drag 0.5U into Top of Empty U...
+                                    // index=Even. isDragTarget=True. Div Height=1U. Whole 1U highlights.
+                                    // Logic correction: 
+                                    // If I drag 0.5U into Top (Even), I want to see it occupy Top.
+                                    // But the div is 1U.
+                                    // Ideally, drag-over should BREAK the merge.
+                                    // How to do that? 
+                                    // If `isDragRelated` -> Force Split?
+
+                                    // Let's verify "isMergedEmpty".
+                                    // If isMergedEmpty is true, but (isDragTarget or isNextDragTarget?)
+                                    // Let's try simple first: Just highlight the whole merged block. User will see 1U highlight for 0.5U module.
+                                    // It returns a 1U highlight. Dropping works. Result is split.
+                                    // Acceptable for now. 0.5U highlight on 1U block is ambiguous but safe.
 
                                     return (
                                         <div
@@ -628,76 +732,108 @@ export default function RackPlanner() {
                                             onDrop={(e) => handleDrop(e, index)}
                                             className={`relative flex w-full transition-colors ${isDragTarget ? `${dragColorClass} z-20` : ''
                                                 }`}
-                                            style={{ height: isModulePart ? 0 : moduleHeight }} // Collapse covered slots
+                                            // Use renderedHeight. 
+                                            // NOTE: Module Start slot calculates full height.
+                                            style={{ height: renderedHeight, minHeight: renderedHeight }}
                                         >
                                             {/* Left Rail Indicators */}
                                             <div
-                                                className="absolute top-0 bottom-0 flex flex-col items-center w-full"
+                                                className="absolute top-0 bottom-0 flex flex-col items-center w-full z-40"
                                                 style={{
                                                     left: `-${RAIL_WIDTH}px`,
                                                     width: `${RAIL_WIDTH}px`,
                                                 }}
                                             >
-                                                {/* Render U numbers for occupied or empty.
- If occupied (isModuleStart), we iterate through all Us it covers. 
- If empty, we just render one. 
- */}
-                                                {isModuleStart && slot.module
-                                                    ? // Render multiple U numbers for multi-U items
-                                                    Array.from({ length: slot.module.uSize }).map(
-                                                        (_, i) => (
+                                                {/* Labels Logic */}
+                                                {isModuleStart && slot.module ? (
+                                                    // Render labels for ALL slots covered by this module
+                                                    Array.from({ length: slot.module.uSize * 2 }).map((_, i) => {
+                                                        const targetIndex = index + i;
+                                                        // Only render label if this sub-slot is an Even index (Top of U)
+                                                        if (targetIndex % 2 !== 0) return null;
+
+                                                        const currentUPosition = slot.uPosition - (i * 0.5);
+                                                        const topOffset = i * (U_PIXELS / 2); // Each internal slot is 0.5U height
+
+                                                        return (
                                                             <div
                                                                 key={i}
-                                                                style={{ height: U_PIXELS }}
-                                                                className="relative flex items-center justify-center w-full"
+                                                                style={{ height: U_PIXELS, top: topOffset }}
+                                                                className="absolute flex items-center justify-center w-full shrink-0 z-10"
                                                             >
                                                                 <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
-                                                                    {slot.uPosition - i}
+                                                                    {currentUPosition}
                                                                 </span>
                                                                 <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
                                                             </div>
-                                                        )
-                                                    )
-                                                    : !isOccupied &&
-                                                    !isModulePart && (
-                                                        // Render single U number for empty slot
+                                                        );
+                                                    })
+                                                ) : (
+                                                    // Standard Empty / Single Slot Logic
+                                                    isEvenIndex && (
                                                         <div
                                                             style={{ height: U_PIXELS }}
-                                                            className="relative flex items-center justify-center w-full"
+                                                            className="absolute top-0 flex items-center justify-center w-full shrink-0 z-10"
                                                         >
                                                             <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
                                                                 {slot.uPosition}
                                                             </span>
                                                             <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
                                                         </div>
-                                                    )}
+                                                    )
+                                                )}
                                             </div>
 
                                             {/* Slot Content */}
                                             <div className="flex-1 relative w-full h-full group">
                                                 {/* Empty Slot Placeholder */}
-                                                {!isOccupied && !isModulePart && (
+                                                {!isOccupied && (
                                                     <div
                                                         className="relative w-full h-full flex items-center justify-center border-b border-gray-400/20 dark:border-white/5"
-                                                        style={{ height: U_PIXELS }}
                                                     >
+
+
                                                         {/* Left Silver Bar */}
-                                                        <div className="absolute left-[1px] top-0 bottom-0 w-4 bg-gray-300 dark:bg-gray-700 border-r border-gray-400/30 dark:border-gray-800/50 shadow-inner flex flex-col justify-between py-3 items-center">
-                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
-                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
-                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                        <div className="absolute left-[1px] top-0 bottom-0 w-4 bg-gray-300 dark:bg-gray-700 border-r border-gray-400/30 dark:border-gray-800/50 shadow-inner flex flex-col justify-between py-2 items-center overflow-hidden">
+                                                            {/* Holes. If 1U (90px), we fit 3. If 0.5U (45px), we might fit... 
+                                                                We can use a pattern or just `justify-between`.
+                                                                1U typically has 3 holes. 
+                                                                If we just flex-col justify-between, it will adapt.
+                                                                For 0.5U, 3 holes might look squashed. 
+                                                                Let's use a repeating background or conditional holes?
+                                                                Previous: 3 divs hardcoded.
+                                                                If height is 45px, 3 divs will squash.
+                                                                Try: `gap-1` instead of justify-between?
+                                                                Or:
+                                                            */}
+                                                            {renderedHeight >= U_PIXELS * 0.8 ? (
+                                                                // Full U
+                                                                <>
+                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
+                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
+                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
+                                                                </>
+                                                            ) : (
+                                                                // Half U
+                                                                <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-auto" />
+                                                            )}
                                                         </div>
 
                                                         {/* Right Silver Bar */}
-                                                        <div className="absolute right-[1px] top-0 bottom-0 w-4 bg-gray-300 dark:bg-gray-700 border-l border-gray-400/30 dark:border-gray-800/50 shadow-inner flex flex-col justify-between py-3 items-center">
-                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
-                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
-                                                            <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                        <div className="absolute right-[1px] top-0 bottom-0 w-4 bg-gray-300 dark:bg-gray-700 border-l border-gray-400/30 dark:border-gray-800/50 shadow-inner flex flex-col justify-between py-2 items-center overflow-hidden">
+                                                            {renderedHeight >= U_PIXELS * 0.8 ? (
+                                                                <>
+                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
+                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
+                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
+                                                                </>
+                                                            ) : (
+                                                                <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-auto" />
+                                                            )}
                                                         </div>
 
-                                                        {/* Original Empty Placeholder text */}
                                                         <div className="text-gray-400/20 dark:text-white/10 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity select-none pointer-events-none">
-                                                            Empty {slot.uPosition}U
+                                                            Empty {slot.uPosition} {isMergedEmpty ? 'U' : ''}
                                                         </div>
                                                     </div>
                                                 )}
@@ -786,39 +922,47 @@ export default function RackPlanner() {
 
                                             {/* Right Rail */}
                                             <div
-                                                className="absolute top-0 bottom-0 flex flex-col items-center w-full"
+                                                className="absolute top-0 bottom-0 flex flex-col items-center w-full z-40"
                                                 style={{
                                                     right: `-${RAIL_WIDTH}px`,
                                                     width: `${RAIL_WIDTH}px`,
                                                 }}
                                             >
-                                                {isModuleStart && slot.module
-                                                    ? Array.from({ length: slot.module.uSize }).map(
-                                                        (_, i) => (
+                                                {isModuleStart && slot.module ? (
+                                                    // Render labels for ALL slots covered by this module
+                                                    Array.from({ length: slot.module.uSize * 2 }).map((_, i) => {
+                                                        const targetIndex = index + i;
+                                                        if (targetIndex % 2 !== 0) return null;
+
+                                                        const currentUPosition = slot.uPosition - (i * 0.5);
+                                                        const topOffset = i * (U_PIXELS / 2);
+
+                                                        return (
                                                             <div
                                                                 key={i}
-                                                                style={{ height: U_PIXELS }}
-                                                                className="relative flex items-center justify-center w-full"
+                                                                style={{ height: U_PIXELS, top: topOffset }}
+                                                                className="absolute flex items-center justify-center w-full shrink-0 z-10"
                                                             >
                                                                 <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
-                                                                    {slot.uPosition - i}
+                                                                    {currentUPosition}
                                                                 </span>
                                                                 <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
                                                             </div>
-                                                        )
-                                                    )
-                                                    : !isOccupied &&
-                                                    !isModulePart && (
+                                                        );
+                                                    })
+                                                ) : (
+                                                    isEvenIndex && (
                                                         <div
                                                             style={{ height: U_PIXELS }}
-                                                            className="relative flex items-center justify-center w-full"
+                                                            className="absolute top-0 flex items-center justify-center w-full shrink-0 z-10"
                                                         >
                                                             <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
                                                                 {slot.uPosition}
                                                             </span>
                                                             <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
                                                         </div>
-                                                    )}
+                                                    )
+                                                )}
                                             </div>
                                         </div>
                                     );
