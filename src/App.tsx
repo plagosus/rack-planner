@@ -23,113 +23,52 @@ const WIDTH_19_INCH = Math.round(19 * PIXELS_PER_INCH);
 const WIDTH_10_INCH = Math.round(10 * PIXELS_PER_INCH);
 const RAIL_WIDTH = Math.round(0.625 * PIXELS_PER_INCH);
 
-// Add window augmentation for Google Analytics
-declare global {
-    interface Window {
-        dataLayer: any[];
-        gtag: (...args: any[]) => void;
-    }
-}
 
-export default function RackPlanner() {
-    // --- State ---
+
+export default function App() {
+    const [rackSettings, setRackSettings] = useState<RackSettings>({
+        heightU: 10,
+        widthStandard: '19inch',
+    });
+    const [rackSlots, setRackSlots] = useState<RackSlot[]>([]);
+    const [customLibrary, setCustomLibrary] = useState<RackModule[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const [scale, setScale] = useState(1);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [isDarkMode, setIsDarkMode] = useState(() => {
         if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('darkMode');
-            if (saved !== null) {
-                return saved === 'true';
+            const saved = localStorage.getItem('theme');
+            if (saved) {
+                return saved === 'dark';
             }
             return window.matchMedia('(prefers-color-scheme: dark)').matches;
         }
-        return true;
+        return false;
     });
-
-    const [areAnimationsEnabled, setAreAnimationsEnabled] = useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem('animationsEnabled');
-            return saved !== null ? saved === 'true' : true;
-        }
-        return true;
-    });
-
-    const [isLoading, setIsLoading] = useState(true);
-
-    // Rack Configuration
-    const [rackSettings, setRackSettings] = useState<RackSettings>({
-        heightU: 10,
-        widthStandard: '10inch',
-    });
-    const [rackSlots, setRackSlots] = useState<RackSlot[]>([]);
-
-    // Library State
+    const [areAnimationsEnabled, setAreAnimationsEnabled] = useState(true);
+    const [draggedItem, setDraggedItem] = useState<{ module: RackModule; originalIndex?: number } | null>(null);
+    const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [libraryTab, setLibraryTab] = useState<'catalog' | 'custom'>('catalog');
-    const [customLibrary, setCustomLibrary] = useState<RackModule[]>([]);
-
-    // Drag State
-    const [draggedItem, setDraggedItem] = useState<{
-        module: RackModule;
-        originalIndex?: number;
-    } | null>(null);
-    const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-
-    // Custom Form State
+    const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
     const [customName, setCustomName] = useState('');
     const [customU, setCustomU] = useState(1);
     const [customType, setCustomType] = useState<ModuleType>('generic');
     const [customColor, setCustomColor] = useState(COLOR_OPTIONS[0].value);
     const [customImage, setCustomImage] = useState<string | null>(null);
-    const [customShowName, setCustomShowName] = useState(true); // Added customShowName state
-    const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
+    const [customShowName, setCustomShowName] = useState(true);
 
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const containerRef = useRef<HTMLElement>(null);
-    const [scale, setScale] = useState(1);
-
-    // --- Persistence & Initialization ---
-
-    // Handle Dark Mode
     useEffect(() => {
-        console.log('Dark mode state changed:', isDarkMode);
-        const root = window.document.documentElement;
         if (isDarkMode) {
-            root.classList.add('dark');
-            console.log('Added dark class to html');
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
         } else {
-            root.classList.remove('dark');
-            console.log('Removed dark class from html');
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
         }
-        localStorage.setItem('darkMode', String(isDarkMode));
     }, [isDarkMode]);
-
-    useEffect(() => {
-        localStorage.setItem('animationsEnabled', String(areAnimationsEnabled));
-    }, [areAnimationsEnabled]);
-
-    // Handle Google Analytics
-    useEffect(() => {
-        const gaId = import.meta.env.VITE_GOOGLE_ANALYTICS_ID;
-
-        if (gaId && typeof window !== 'undefined') {
-            // Load the script
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
-            document.head.appendChild(script);
-
-            // Initialize dataLayer
-            window.dataLayer = window.dataLayer || [];
-            function gtag(...args: any[]) {
-                window.dataLayer.push(args);
-            }
-            window.gtag = gtag;
-
-            gtag('js', new Date());
-            gtag('config', gaId);
-
-            console.log('Google Analytics initialized with ID:', gaId);
-        }
-    }, []);
 
     // Handle Responsive Scaling
     useEffect(() => {
