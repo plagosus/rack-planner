@@ -36,9 +36,12 @@ export const ModuleFace = ({
         >
             {!hasImage && (
                 <div className="flex flex-col items-center opacity-80 pointer-events-none w-full px-4">
-                    <span className="font-mono text-xs uppercase tracking-widest text-white/50 mb-1">
-                        {module.name.substring(0, 32)}
-                    </span>
+                    {/* Label - Hide if showName is explicitly false */}
+                    {module.showName !== false && (
+                        <span className="font-mono text-xs uppercase tracking-widest text-white/50 mb-1">
+                            {module.name.substring(0, 32)}
+                        </span>
+                    )}
 
                     {/* Visual Features based on Type */}
                     <div className="flex gap-2 w-full justify-center">

@@ -14,9 +14,9 @@ export const PREDEFINED_MODULES: RackModule[] = [
     { id: 'server-4u', name: 'Server 4U', uSize: 4, type: 'server', color: 'bg-indigo-950' },
 
     // Storage
-    { id: 'nas-1u-35', name: '1U 3.5" HDD Bay', uSize: 1, type: 'storage', color: 'bg-gray-800' },
-    { id: 'nas-2u-35', name: '2U 3.5" HDD Bay', uSize: 2, type: 'storage', color: 'bg-gray-800' },
-    { id: 'nas-2u-25', name: '2U 2.5" SSD Bay', uSize: 2, type: 'storage', color: 'bg-gray-800' },
+    { id: 'nas-1u-35', name: '1U 3.5" HDD Bay', uSize: 1, type: 'storage', color: 'bg-gray-800', showName: false },
+    { id: 'nas-2u-35', name: '2U 3.5" HDD Bay', uSize: 2, type: 'storage', color: 'bg-gray-800', showName: false },
+    { id: 'nas-2u-25', name: '2U 2.5" SSD Bay', uSize: 2, type: 'storage', color: 'bg-gray-800', showName: false },
 
     // Networking
     { id: 'switch-24', name: '24-Port Switch', uSize: 1, type: 'network', color: 'bg-cyan-950' },
@@ -25,8 +25,8 @@ export const PREDEFINED_MODULES: RackModule[] = [
     { id: 'switch-5', name: '5-Port Switch', uSize: 1, type: 'network', color: 'bg-cyan-950' },
 
     // Power
-    { id: 'pdu-1u', name: 'PDU 1U', uSize: 1, type: 'power', color: 'bg-gray-800' },
-    { id: 'ups-1u', name: 'UPS 1U', uSize: 1, type: 'power', color: 'bg-gray-800' },
+    { id: 'pdu-1u', name: 'PDU 1U', uSize: 1, type: 'power', color: 'bg-gray-800', showName: false },
+    { id: 'ups-1u', name: 'UPS 1U', uSize: 1, type: 'power', color: 'bg-gray-800', showName: false },
 
     // Accessories
     {
@@ -35,6 +35,7 @@ export const PREDEFINED_MODULES: RackModule[] = [
         uSize: 1,
         type: 'accessory',
         color: 'bg-neutral-900',
+        showName: false,
     },
     {
         id: 'cable-man-1u',
@@ -53,6 +54,7 @@ export const PREDEFINED_MODULES: RackModule[] = [
         uSize: 1,
         type: 'accessory',
         color: 'bg-slate-900',
+        showName: false,
     },
     {
         id: 'rpi-mount-2u',
@@ -60,6 +62,7 @@ export const PREDEFINED_MODULES: RackModule[] = [
         uSize: 2,
         type: 'accessory',
         color: 'bg-slate-900',
+        showName: false,
     },
     { id: 'gen-05u', name: 'Generic 0.5U', uSize: 0.5, type: 'generic', color: 'bg-gray-700' },
     { id: 'shelf-05u', name: 'Shelf 0.5U', uSize: 0.5, type: 'accessory', color: 'bg-slate-800' },
@@ -69,5 +72,6 @@ export const PREDEFINED_MODULES: RackModule[] = [
         uSize: 0.5,
         type: 'accessory',
         color: 'bg-neutral-900',
+        showName: false,
     },
 ];

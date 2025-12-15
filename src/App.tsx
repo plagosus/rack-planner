@@ -79,6 +79,7 @@ export default function RackPlanner() {
     const [customType, setCustomType] = useState<ModuleType>('generic');
     const [customColor, setCustomColor] = useState(COLOR_OPTIONS[0].value);
     const [customImage, setCustomImage] = useState<string | null>(null);
+    const [customShowName, setCustomShowName] = useState(true); // Added customShowName state
     const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -445,6 +446,7 @@ export default function RackPlanner() {
         setCustomType(module.type);
         setCustomColor(module.color || COLOR_OPTIONS[0].value);
         setCustomImage(module.image || null);
+        setCustomShowName(module.showName !== false); // Default true
         setEditingModuleId(module.id);
         setLibraryTab('custom');
     };
@@ -455,6 +457,7 @@ export default function RackPlanner() {
         setCustomType('generic');
         setCustomColor(COLOR_OPTIONS[0].value);
         setCustomImage(null);
+        setCustomShowName(true);
         setEditingModuleId(null);
     };
 
@@ -469,6 +472,7 @@ export default function RackPlanner() {
                 type: customType,
                 color: customColor,
                 image: customImage || undefined,
+                showName: customShowName,
             };
 
             const updatedLibrary = customLibrary.map((mod) =>
@@ -499,6 +503,7 @@ export default function RackPlanner() {
                 type: customType,
                 color: customColor,
                 image: customImage || undefined,
+                showName: customShowName,
             };
             setCustomLibrary([...customLibrary, newMod]);
         }
@@ -1185,6 +1190,16 @@ export default function RackPlanner() {
                                         className="w-full bg-gray-100 dark:bg-gray-800 border-none rounded p-2 text-sm focus:ring-1 focus:ring-indigo-500"
                                         placeholder="e.g. My Custom Server"
                                     />
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <input
+                                            type="checkbox"
+                                            id="showName"
+                                            checked={customShowName}
+                                            onChange={(e) => setCustomShowName(e.target.checked)}
+                                            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                        />
+                                        <label htmlFor="showName" className="text-xs text-gray-500 cursor-pointer select-none">Show Name on Faceplate</label>
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
@@ -1197,7 +1212,7 @@ export default function RackPlanner() {
                                             onChange={(e) => setCustomU(Number(e.target.value))}
                                             className="w-full bg-gray-100 dark:bg-gray-800 border-none rounded p-2 text-sm"
                                         >
-                                            {[1, 2, 3, 4, 5, 6, 8, 10].map((u) => (
+                                            {[0.5, 1, 2, 3, 4, 5, 6, 8, 10].map((u) => (
                                                 <option key={u} value={u}>
                                                     {u}U
                                                 </option>
