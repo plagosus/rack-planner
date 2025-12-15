@@ -47,7 +47,7 @@ export const ModuleFace = ({
                     <div className="flex gap-2 w-full justify-center">
                         {/* Networking: Ports */}
                         {module.type === 'network' && (
-                            <NetworkFace module={module} isPowered={isPowered} />
+                            <NetworkFace module={module} isPowered={isPowered} rackWidth={rackWidth} />
                         )}
 
                         {/* Server: Indicators or Drive Bays */}

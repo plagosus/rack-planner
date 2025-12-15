@@ -34,7 +34,7 @@ export const PDUFace = ({
             </div>
 
             {/* Schuko Outlets */}
-            <div className="flex items-center gap-8 overflow-hidden">
+            <div className="flex items-center gap-10 overflow-hidden">
                 {Array.from({ length: outletCount }).map((_, i) => (
                     <div
                         key={i}
