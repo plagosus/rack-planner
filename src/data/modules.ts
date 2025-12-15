@@ -61,6 +61,7 @@ export const PREDEFINED_MODULES: RackModule[] = [
         type: 'accessory',
         color: 'bg-slate-900',
     },
+    { id: 'gen-05u', name: 'Generic 0.5U', uSize: 0.5, type: 'generic', color: 'bg-gray-700' },
     { id: 'shelf-05u', name: 'Shelf 0.5U', uSize: 0.5, type: 'accessory', color: 'bg-slate-800' },
     {
         id: 'patch-panel-05u',

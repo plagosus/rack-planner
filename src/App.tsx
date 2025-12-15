@@ -337,11 +337,49 @@ export default function RackPlanner() {
     const handleDragOver = (e: React.DragEvent, index: number) => {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
-        setDragOverIndex(index);
+
+        if (!draggedItem) return;
+
+        let targetIndex = index;
+        const uSize = draggedItem.module.uSize;
+
+        // Custom Logic based on U size
+        if (uSize === 0.5) {
+            // 0.5U Logic: Precise targeting for split slots
+            // If over a merged empty 1U slot (Even index, next is empty), check sub-position
+            if (index % 2 === 0) {
+                const nextSlot = rackSlots[index + 1];
+                if (
+                    nextSlot &&
+                    rackSlots[index].moduleId === null &&
+                    nextSlot.moduleId === null
+                ) {
+                    // This is a merged empty 1U slot. Check cursor position.
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const offsetY = e.clientY - rect.top;
+                    // If in bottom half
+                    if (offsetY > rect.height / 2) {
+                        targetIndex = index + 1;
+                    }
+                }
+            }
+        } else {
+            // Whole Unit Logic: Snap to even/top alignment
+            // If hovering over an Odd (Bottom) slot of a U, align to the Even (Top) slot above it
+            if (index % 2 !== 0) {
+                targetIndex = index - 1;
+            }
+        }
+
+        setDragOverIndex(targetIndex);
     };
 
-    const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    const handleDrop = (e: React.DragEvent, eventIndex: number) => {
         e.preventDefault();
+
+        // Prefer the calculated dragOverIndex for consistency with visual feedback
+        const targetIndex = dragOverIndex !== null ? dragOverIndex : eventIndex;
+
         setDragOverIndex(null);
 
         if (!draggedItem) return;
@@ -351,7 +389,6 @@ export default function RackPlanner() {
 
         if (!checkCanDrop(targetIndex, module.uSize, draggedItem?.originalIndex)) {
             // Visual feedback is shown during drag, but if they drop anyway, we just cancel.
-            // Optionally alert if you want, but silent fail is arguably better if UI provides red cue.
             setDraggedItem(null);
             return;
         }
@@ -689,49 +726,60 @@ export default function RackPlanner() {
                                     // So we don't snap effectiveDragIndex for validity, but maybe for visual alignment if we wanted to be helpful.
                                     // For now, strict feedback:
 
-                                    const effectiveDragIndex = dragOverIndex; // No snapping, raw feedback
+                                    const isValid = dragOverIndex !== null ? checkCanDrop(dragOverIndex, uSize, draggedItem?.originalIndex) : true;
+                                    // Specificity check:
+                                    // If dragging 0.5U (slotsNeeded=1).
+                                    // If dragOverIndex = Even (0). Range [0, 1). Match 0.
+                                    // If dragOverIndex = Odd (1). Range [1, 2). Match 1. (But index is 0!)
 
-                                    const isDragTarget =
-                                        effectiveDragIndex !== null &&
-                                        index >= effectiveDragIndex &&
-                                        index < effectiveDragIndex + slotsNeeded;
+                                    // Highlight Logic correction for Merged Slots
+                                    let highlightStyle: React.CSSProperties = { inset: 0 };
+                                    let showHighlight = false;
 
-                                    const isMainDragTarget = effectiveDragIndex === index;
-                                    const isValid = effectiveDragIndex !== null ? checkCanDrop(effectiveDragIndex, uSize, draggedItem?.originalIndex) : true;
+                                    if (dragOverIndex !== null) {
+                                        if (isMergedEmpty) {
+                                            // Merged Slot Logic (Even Index, covers Index & Index+1)
 
-                                    const dragColorClass = isValid
-                                        ? 'bg-indigo-500/20 border-indigo-500'
-                                        : 'bg-red-500/20 border-red-500';
+                                            // 1. Precise Target Highlight (Top/Bottom of this specific merged slot)
+                                            if (dragOverIndex === index) {
+                                                showHighlight = true;
+                                                // If 0.5U, only top half. If 1U+, full inset.
+                                                highlightStyle = uSize === 0.5
+                                                    ? { top: 0, height: '50%', left: 0, right: 0 }
+                                                    : { inset: 0 };
+                                            } else if (uSize === 0.5 && dragOverIndex === index + 1) {
+                                                // 0.5U dragging to bottom half
+                                                showHighlight = true;
+                                                highlightStyle = { bottom: 0, height: '50%', left: 0, right: 0 };
+                                            }
+                                            // 2. Multi-U Overlap Logic
+                                            // If a module starts ABOVE this slot, does it extend into/over this slot?
+                                            // Range: [dragOverIndex, dragOverIndex + slotsNeeded)
+                                            // Current Slot Range: [index, index + 2) (Includes index and index+1)
+                                            // If dragOverIndex < index AND (dragOverIndex + slotsNeeded) > index
+                                            else if (dragOverIndex < index && (dragOverIndex + slotsNeeded) > index) {
+                                                showHighlight = true;
+                                                highlightStyle = { inset: 0 };
+                                            }
 
-                                    // For merged empty 1U, we might have a drag target that only covers HALF of it (e.g. dragging 0.5U into Top).
-                                    // This requires the merged block to potentially show a highlight on just half its area?
-                                    // CSS Grid/Flex overlay? 
-                                    // Actually, if we are interfering with a merged empty block, we might want to "Split" it visually during drag?
-                                    // That's complex. 
-                                    // Simple approach: The "IsDragTarget" highlights the SLOT div. 
-                                    // If the SLOT div is Merged 1U, and we highlight it... it highlights the whole 1U.
-                                    // If I drag 0.5U into Top of Empty U...
-                                    // index=Even. isDragTarget=True. Div Height=1U. Whole 1U highlights.
-                                    // Logic correction: 
-                                    // If I drag 0.5U into Top (Even), I want to see it occupy Top.
-                                    // But the div is 1U.
-                                    // Ideally, drag-over should BREAK the merge.
-                                    // How to do that? 
-                                    // If `isDragRelated` -> Force Split?
+                                        } else {
+                                            // Standard Slot Logic
+                                            // If this slot is within the drag target range
+                                            if (index >= dragOverIndex && index < dragOverIndex + slotsNeeded) {
+                                                showHighlight = true;
+                                                highlightStyle = { inset: 0 };
+                                            }
+                                        }
+                                    }
 
-                                    // Let's verify "isMergedEmpty".
-                                    // If isMergedEmpty is true, but (isDragTarget or isNextDragTarget?)
-                                    // Let's try simple first: Just highlight the whole merged block. User will see 1U highlight for 0.5U module.
-                                    // It returns a 1U highlight. Dropping works. Result is split.
-                                    // Acceptable for now. 0.5U highlight on 1U block is ambiguous but safe.
+                                    const isMainDragTarget = dragOverIndex === index || (isMergedEmpty && dragOverIndex === index + 1);
 
                                     return (
                                         <div
                                             key={index}
                                             onDragOver={(e) => handleDragOver(e, index)}
                                             onDrop={(e) => handleDrop(e, index)}
-                                            className={`relative flex w-full transition-colors ${isDragTarget ? `${dragColorClass} z-20` : ''
-                                                }`}
+                                            className="relative flex w-full transition-colors"
                                             // Use renderedHeight. 
                                             // NOTE: Module Start slot calculates full height.
                                             style={{ height: renderedHeight, minHeight: renderedHeight }}
@@ -909,8 +957,12 @@ export default function RackPlanner() {
                                                 )}
 
                                                 {/* Drop Zone Indicator */}
-                                                {isDragTarget && (
-                                                    <div className={`absolute inset-0 border-2 ${isValid ? 'border-indigo-500 bg-indigo-500/10' : 'border-red-500 bg-red-500/10'} z-30 pointer-events-none flex items-center justify-center`}>
+                                                {/* Drop Zone Indicator */}
+                                                {showHighlight && (
+                                                    <div
+                                                        className={`absolute border-2 ${isValid ? 'border-indigo-500 bg-indigo-500/10' : 'border-red-500 bg-red-500/10'} z-30 pointer-events-none flex items-center justify-center`}
+                                                        style={highlightStyle}
+                                                    >
                                                         {isMainDragTarget && (
                                                             <span className={`text-xs font-bold ${isValid ? 'text-indigo-500' : 'text-red-500'} bg-white dark:bg-gray-900 px-2 py-1 rounded shadow`}>
                                                                 {isValid ? `Mount Here (${uSize}U)` : 'Cannot Mount Here'}
