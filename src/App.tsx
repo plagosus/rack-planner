@@ -254,6 +254,41 @@ export default function RackPlanner() {
 
     // --- Drag and Drop Handlers ---
 
+    // Helper: Check if a module can be dropped at targetIndex
+    const checkCanDrop = (
+        targetIndex: number,
+        moduleUSize: number,
+        originalIndex?: number
+    ): boolean => {
+        // Boundary Check: If top of module goes below index 0 (top of rack)
+        if (targetIndex - moduleUSize + 1 < 0) {
+            return false;
+        }
+
+        // Collision Check
+        const slotsNeeded = moduleUSize;
+        let originalModuleId: string | null = null;
+
+        if (originalIndex !== undefined && rackSlots[originalIndex]) {
+            originalModuleId = rackSlots[originalIndex].moduleId;
+        }
+
+        for (let i = 0; i < slotsNeeded; i++) {
+            const slotIndex = targetIndex - i;
+            if (slotIndex < 0) return false;
+
+            const slot = rackSlots[slotIndex];
+            if (slot.moduleId !== null) {
+                // If it's occupied, check if it's the module we are currently moving
+                if (originalModuleId && slot.moduleId === originalModuleId) {
+                    continue; // Same module, safe.
+                }
+                return false; // Collision with another module
+            }
+        }
+        return true;
+    };
+
     const handleDragStart = (e: React.DragEvent, module: RackModule, originalIndex?: number) => {
         setDraggedItem({ module, originalIndex });
         e.dataTransfer.effectAllowed = 'move';
@@ -274,17 +309,17 @@ export default function RackPlanner() {
         const { module, originalIndex } = draggedItem;
         const slotsNeeded = module.uSize;
 
-        // Boundary Check
-        if (targetIndex - slotsNeeded + 1 < 0) {
-            alert(`Not enough space at top for a ${slotsNeeded}U module.`);
+        if (!checkCanDrop(targetIndex, slotsNeeded, originalIndex)) {
+            // Visual feedback is shown during drag, but if they drop anyway, we just cancel.
+            // Optionally alert if you want, but silent fail is arguably better if UI provides red cue.
             setDraggedItem(null);
             return;
         }
 
-        // Collision Check
+        // Proceed to place item
         const newSlots = [...rackSlots];
 
-        // 1. If moving, clear old position first
+        // 1. Clear old position if moving
         if (originalIndex !== undefined) {
             const originalId = newSlots[originalIndex].moduleId;
             if (originalId) {
@@ -296,22 +331,7 @@ export default function RackPlanner() {
             }
         }
 
-        // 2. Check for collisions
-        let collision = false;
-        for (let i = 0; i < slotsNeeded; i++) {
-            if (newSlots[targetIndex - i].moduleId !== null) {
-                collision = true;
-                break;
-            }
-        }
-
-        if (collision) {
-            alert('Space is occupied.');
-            setDraggedItem(null);
-            return;
-        }
-
-        // 3. Place item
+        // 2. Place item
         const instanceId =
             originalIndex !== undefined
                 ? rackSlots[originalIndex!].moduleId!
@@ -464,6 +484,8 @@ export default function RackPlanner() {
         );
     }
 
+
+
     return (
         <div className="h-screen w-full overflow-hidden flex flex-col">
             <div className="flex-1 flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
@@ -573,7 +595,26 @@ export default function RackPlanner() {
                                     const isModulePart = isOccupied && !isModuleStart;
 
                                     // Drag Over styling
-                                    const isDragTarget = dragOverIndex === index;
+                                    const uSize = draggedItem?.module.uSize || 1;
+                                    const isDragTarget =
+                                        dragOverIndex !== null &&
+                                        index <= dragOverIndex &&
+                                        index > dragOverIndex - uSize;
+                                    // Only show text on the main hover slot
+                                    const isMainDragTarget = dragOverIndex === index;
+
+                                    // Determine validity if it's a drag target
+                                    // Use checkCanDrop on the dragOverIndex, not current index (since highlight depends on master drop index)
+                                    // But wait, the loop runs for each slot.
+                                    // If I am highlighting slots 4 and 5 because dragOverIndex is 5 (and size is 2).
+                                    // I want to know if dropping at 5 is valid.
+
+                                    const isValid = dragOverIndex !== null ? checkCanDrop(dragOverIndex, uSize, draggedItem?.originalIndex) : true;
+
+                                    // Styles
+                                    const dragColorClass = isValid
+                                        ? 'bg-indigo-500/20 border-indigo-500' // Valid
+                                        : 'bg-red-500/20 border-red-500';      // Invalid
 
                                     // Calculate height if start
                                     const moduleHeight = isModuleStart
@@ -585,7 +626,7 @@ export default function RackPlanner() {
                                             key={index}
                                             onDragOver={(e) => handleDragOver(e, index)}
                                             onDrop={(e) => handleDrop(e, index)}
-                                            className={`relative flex w-full transition-colors ${isDragTarget ? 'bg-indigo-500/20 z-20' : ''
+                                            className={`relative flex w-full transition-colors ${isDragTarget ? `${dragColorClass} z-20` : ''
                                                 }`}
                                             style={{ height: isModulePart ? 0 : moduleHeight }} // Collapse covered slots
                                         >
@@ -733,10 +774,12 @@ export default function RackPlanner() {
 
                                                 {/* Drop Zone Indicator */}
                                                 {isDragTarget && (
-                                                    <div className="absolute inset-0 border-2 border-indigo-500 bg-indigo-500/10 z-30 pointer-events-none flex items-center justify-center">
-                                                        <span className="text-xs font-bold text-indigo-500 bg-white dark:bg-gray-900 px-2 py-1 rounded shadow">
-                                                            Drop Here ({draggedItem?.module.uSize}U)
-                                                        </span>
+                                                    <div className={`absolute inset-0 border-2 ${isValid ? 'border-indigo-500 bg-indigo-500/10' : 'border-red-500 bg-red-500/10'} z-30 pointer-events-none flex items-center justify-center`}>
+                                                        {isMainDragTarget && (
+                                                            <span className={`text-xs font-bold ${isValid ? 'text-indigo-500' : 'text-red-500'} bg-white dark:bg-gray-900 px-2 py-1 rounded shadow`}>
+                                                                {isValid ? `Mount Here (${uSize}U)` : 'Cannot Mount Here'}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
