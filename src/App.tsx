@@ -663,6 +663,68 @@ export default function RackPlanner() {
                             <div
                                 className="flex flex-col relative w-full border-x border-gray-800 bg-[#1a1b26] shadow-2xl shrink-0 transition-all duration-300 ease-in-out"
                             >
+                                {/* Static Background Rails - Fixed Visuals */}
+                                <div className="absolute inset-0 pointer-events-none z-0">
+                                    {Array.from({ length: rackSettings.heightU }).map((_, i) => {
+                                        const uNum = rackSettings.heightU - i;
+                                        return (
+                                            <div
+                                                key={`rail-${uNum}`}
+                                                style={{ height: U_PIXELS, top: i * U_PIXELS }}
+                                                className="absolute w-full border-b border-gray-800/50"
+                                            >
+                                                {/* LEFT RAIL */}
+                                                <div
+                                                    className="absolute top-0 bottom-0 flex flex-col items-center"
+                                                    style={{
+                                                        left: `-${RAIL_WIDTH}px`,
+                                                        width: `${RAIL_WIDTH}px`,
+                                                    }}
+                                                >
+                                                    {/* Label */}
+                                                    <div className="absolute top-0 flex items-center justify-center w-full h-full z-10">
+                                                        <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
+                                                            {uNum}
+                                                        </span>
+                                                        <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Left Silver Bar (Mounting Rail) */}
+                                                <div className="absolute left-[1px] top-0 bottom-0 w-4 bg-gray-300 dark:bg-gray-700 border-r border-gray-400/30 dark:border-gray-800/50 shadow-inner flex flex-col justify-between py-2 items-center overflow-hidden">
+                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                </div>
+
+                                                {/* RIGHT RAIL */}
+                                                <div
+                                                    className="absolute top-0 bottom-0 flex flex-col items-center"
+                                                    style={{
+                                                        right: `-${RAIL_WIDTH}px`,
+                                                        width: `${RAIL_WIDTH}px`,
+                                                    }}
+                                                >
+                                                    {/* Label */}
+                                                    <div className="absolute top-0 flex items-center justify-center w-full h-full z-10">
+                                                        <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
+                                                            {uNum}
+                                                        </span>
+                                                        <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Right Silver Bar (Mounting Rail) */}
+                                                <div className="absolute right-[1px] top-0 bottom-0 w-4 bg-gray-300 dark:bg-gray-700 border-l border-gray-400/30 dark:border-gray-800/50 shadow-inner flex flex-col justify-between py-2 items-center overflow-hidden">
+                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px]" />
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
                                 {rackSlots.map((slot, index) => {
                                     const isOccupied = slot.moduleId !== null;
                                     const prevSlot = index > 0 ? rackSlots[index - 1] : null;
@@ -789,53 +851,7 @@ export default function RackPlanner() {
                                             // NOTE: Module Start slot calculates full height.
                                             style={{ height: renderedHeight, minHeight: renderedHeight }}
                                         >
-                                            {/* Left Rail Indicators */}
-                                            <div
-                                                className="absolute top-0 bottom-0 flex flex-col items-center w-full z-40"
-                                                style={{
-                                                    left: `-${RAIL_WIDTH}px`,
-                                                    width: `${RAIL_WIDTH}px`,
-                                                }}
-                                            >
-                                                {/* Labels Logic */}
-                                                {isModuleStart && slot.module ? (
-                                                    // Render labels for ALL slots covered by this module
-                                                    Array.from({ length: slot.module.uSize * 2 }).map((_, i) => {
-                                                        const targetIndex = index + i;
-                                                        // Only render label if this sub-slot is an Even index (Top of U)
-                                                        if (targetIndex % 2 !== 0) return null;
-
-                                                        const currentUPosition = slot.uPosition - (i * 0.5);
-                                                        const topOffset = i * (U_PIXELS / 2); // Each internal slot is 0.5U height
-
-                                                        return (
-                                                            <div
-                                                                key={i}
-                                                                style={{ height: U_PIXELS, top: topOffset }}
-                                                                className="absolute flex items-center justify-center w-full shrink-0 z-10"
-                                                            >
-                                                                <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
-                                                                    {currentUPosition}
-                                                                </span>
-                                                                <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
-                                                            </div>
-                                                        );
-                                                    })
-                                                ) : (
-                                                    // Standard Empty / Single Slot Logic
-                                                    isEvenIndex && (
-                                                        <div
-                                                            style={{ height: U_PIXELS }}
-                                                            className="absolute top-0 flex items-center justify-center w-full shrink-0 z-10"
-                                                        >
-                                                            <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
-                                                                {slot.uPosition}
-                                                            </span>
-                                                            <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
-                                                        </div>
-                                                    )
-                                                )}
-                                            </div>
+                                            {/* (Left Rail removed - rendered in background) */}
 
                                             {/* Slot Content */}
                                             <div className="flex-1 relative w-full h-full group">
@@ -846,44 +862,7 @@ export default function RackPlanner() {
                                                     >
 
 
-                                                        {/* Left Silver Bar */}
-                                                        <div className="absolute left-[1px] top-0 bottom-0 w-4 bg-gray-300 dark:bg-gray-700 border-r border-gray-400/30 dark:border-gray-800/50 shadow-inner flex flex-col justify-between py-2 items-center overflow-hidden">
-                                                            {/* Holes. If 1U (90px), we fit 3. If 0.5U (45px), we might fit... 
-                                                                We can use a pattern or just `justify-between`.
-                                                                1U typically has 3 holes. 
-                                                                If we just flex-col justify-between, it will adapt.
-                                                                For 0.5U, 3 holes might look squashed. 
-                                                                Let's use a repeating background or conditional holes?
-                                                                Previous: 3 divs hardcoded.
-                                                                If height is 45px, 3 divs will squash.
-                                                                Try: `gap-1` instead of justify-between?
-                                                                Or:
-                                                            */}
-                                                            {renderedHeight >= U_PIXELS * 0.8 ? (
-                                                                // Full U
-                                                                <>
-                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
-                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
-                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
-                                                                </>
-                                                            ) : (
-                                                                // Half U
-                                                                <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-auto" />
-                                                            )}
-                                                        </div>
 
-                                                        {/* Right Silver Bar */}
-                                                        <div className="absolute right-[1px] top-0 bottom-0 w-4 bg-gray-300 dark:bg-gray-700 border-l border-gray-400/30 dark:border-gray-800/50 shadow-inner flex flex-col justify-between py-2 items-center overflow-hidden">
-                                                            {renderedHeight >= U_PIXELS * 0.8 ? (
-                                                                <>
-                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
-                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
-                                                                    <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-1" />
-                                                                </>
-                                                            ) : (
-                                                                <div className="w-[8px] h-[8px] bg-black/80 rounded-[1px] my-auto" />
-                                                            )}
-                                                        </div>
 
                                                         <div className="text-gray-400/20 dark:text-white/10 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity select-none pointer-events-none">
                                                             Empty {slot.uPosition} {isMergedEmpty ? 'U' : ''}
@@ -977,50 +956,7 @@ export default function RackPlanner() {
                                                 )}
                                             </div>
 
-                                            {/* Right Rail */}
-                                            <div
-                                                className="absolute top-0 bottom-0 flex flex-col items-center w-full z-40"
-                                                style={{
-                                                    right: `-${RAIL_WIDTH}px`,
-                                                    width: `${RAIL_WIDTH}px`,
-                                                }}
-                                            >
-                                                {isModuleStart && slot.module ? (
-                                                    // Render labels for ALL slots covered by this module
-                                                    Array.from({ length: slot.module.uSize * 2 }).map((_, i) => {
-                                                        const targetIndex = index + i;
-                                                        if (targetIndex % 2 !== 0) return null;
-
-                                                        const currentUPosition = slot.uPosition - (i * 0.5);
-                                                        const topOffset = i * (U_PIXELS / 2);
-
-                                                        return (
-                                                            <div
-                                                                key={i}
-                                                                style={{ height: U_PIXELS, top: topOffset }}
-                                                                className="absolute flex items-center justify-center w-full shrink-0 z-10"
-                                                            >
-                                                                <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
-                                                                    {currentUPosition}
-                                                                </span>
-                                                                <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
-                                                            </div>
-                                                        );
-                                                    })
-                                                ) : (
-                                                    isEvenIndex && (
-                                                        <div
-                                                            style={{ height: U_PIXELS }}
-                                                            className="absolute top-0 flex items-center justify-center w-full shrink-0 z-10"
-                                                        >
-                                                            <span className="text-[10px] text-gray-600 dark:text-gray-500 font-mono font-bold opacity-60">
-                                                                {slot.uPosition}
-                                                            </span>
-                                                            <div className="absolute bottom-0 w-1/2 h-px bg-gray-400/30 dark:bg-gray-700"></div>
-                                                        </div>
-                                                    )
-                                                )}
-                                            </div>
+                                            {/* (Right Rail removed - rendered in background) */}
                                         </div>
                                     );
                                 })}
