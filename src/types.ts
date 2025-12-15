@@ -8,6 +8,7 @@ export interface RackModule {
     type: ModuleType;
     image?: string; // Data URL for custom image
     color?: string; // Tailwind color class or hex
+    showName?: boolean; // Whether to override default label visibility
 }
 
 export interface RackSlot {

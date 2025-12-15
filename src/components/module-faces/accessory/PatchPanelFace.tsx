@@ -4,9 +4,11 @@ import { type RackWidth } from '../../../types';
 export const PatchPanelFace = ({
     rackWidth,
     isPowered,
+    uSize = 1,
 }: {
     rackWidth?: RackWidth;
     isPowered?: boolean;
+    uSize?: number;
 }) => {
     const is10Inch = rackWidth === '10inch';
     const portCount = is10Inch ? 12 : 24;
@@ -16,8 +18,10 @@ export const PatchPanelFace = ({
             <div className="flex w-full justify-between gap-[2px]">
                 {Array.from({ length: portCount }).map((_, i) => (
                     <div key={i} className="flex flex-col items-center gap-2 w-full">
-                        {/* White Label */}
-                        <div className="w-[75%] h-1.5 bg-white/70 rounded-[1px] shadow-sm"></div>
+                        {/* White Label - Hide on 0.5U */}
+                        {uSize >= 1 && (
+                            <div className="w-[75%] h-1.5 bg-white/70 rounded-[1px] shadow-sm"></div>
+                        )}
                         {/* Keystone */}
                         <div className="w-[85%] aspect-square bg-black rounded-[2px] flex items-center justify-center">
                             <Port isPowered={isPowered} />

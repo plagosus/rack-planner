@@ -1,14 +1,26 @@
-import type { RackModule } from '../../types';
+import type { RackModule, RackWidth } from '../../types';
+import { Switch48Port } from './network/Switch48Port';
 import { Switch24Port } from './network/Switch24Port';
 import { Switch16Port } from './network/Switch16Port';
 import { Switch8Port } from './network/Switch8Port';
 import { Switch5Port } from './network/Switch5Port';
 
-export const NetworkFace = ({ module, isPowered }: { module: RackModule; isPowered?: boolean }) => {
+export const NetworkFace = ({
+    module,
+    isPowered,
+    rackWidth,
+}: {
+    module: RackModule;
+    isPowered?: boolean;
+    rackWidth?: RackWidth;
+}) => {
     // Determine which networking device to show
     const name = module.name.toLowerCase();
     const id = module.id.toLowerCase();
 
+    if (id === 'switch-48' || name.includes('48-port')) {
+        return <Switch48Port isPowered={isPowered} rackWidth={rackWidth} />;
+    }
     if (id === 'switch-24' || name.includes('24-port')) {
         return <Switch24Port isPowered={isPowered} />;
     }

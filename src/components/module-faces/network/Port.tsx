@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export const Port = ({
-    className = 'w-4 h-4',
+    className = 'w-5 h-5',
     isPowered = true,
 }: {
     className?: string;
@@ -69,26 +69,24 @@ export const Port = ({
         <div className="flex flex-col items-center gap-[0px]">
             {/* Port */}
             <div
-                className={`bg-black/80 rounded-[1px] border border-gray-600 shadow-inner ${className}`}
+                className={`bg-black/80 rounded-[1px] border border-gray-600 shadow-inner flex items-start pt-[1px] justify-center ${className}`}
             >
                 {/* LEDs */}
                 <div className="flex justify-between w-full px-[1px]">
                     {/* Green LED: On when online or active */}
                     <div
-                        className={`w-0.75 h-0.75 rounded-[0.5px] transition-colors duration-200 ${
-                            isPowered && status !== 'off'
-                                ? 'bg-green-500/50 shadow-[0_0_2px_rgba(34,197,94,0.6)]'
-                                : 'bg-green-900/60'
-                        }`}
+                        className={`w-0.5 h-0.5 rounded-[0.5px] transition-colors duration-200 ${isPowered && status !== 'off'
+                            ? 'bg-green-500/50 shadow-[0_0_2px_rgba(34,197,94,0.6)]'
+                            : 'bg-green-900/60'
+                            }`}
                     ></div>
 
                     {/* Amber LED: Blinking when active, Off otherwise */}
                     <div
-                        className={`w-0.75 h-0.75 rounded-[0.5px] transition-colors duration-50 ${
-                            isPowered && status === 'active' && isAmberOn
-                                ? 'bg-amber-500/40 shadow-[0_0_2px_rgba(245,158,11,0.6)]'
-                                : 'bg-amber-900/60'
-                        }`}
+                        className={`w-0.5 h-0.5 rounded-[0.5px] transition-colors duration-50 ${isPowered && status === 'active' && isAmberOn
+                            ? 'bg-amber-500/40 shadow-[0_0_2px_rgba(245,158,11,0.6)]'
+                            : 'bg-amber-900/60'
+                            }`}
                     ></div>
                 </div>
             </div>
