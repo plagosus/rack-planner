@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv, Plugin } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 
 // Custom plugin to inject Google Analytics
