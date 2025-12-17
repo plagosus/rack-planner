@@ -19,6 +19,9 @@ FROM nginx:alpine
 # Remove default nginx static assets
 RUN rm -rf /usr/share/nginx/html/*
 
+# Fix CVE-2025-62408
+RUN apk add --no-cache --upgrade c-ares
+
 # Copy the built assets from the builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
