@@ -14,10 +14,14 @@ export const Server4U = ({ isPowered, rackWidth = '19inch' }: Server4UProps) => 
             {/* Top Left: Power Button & USBs */}
             <div className="absolute left-[5px] top-[0px] flex flex-col gap-3">
                 {/* Power Button */}
-                <div className={`w-4 h-4 rounded-full border-2 border-white/20 flex items-center justify-center ${isPowered ? 'bg-white/5' : 'bg-transparent'}`}>
-                    <div className={`w-2 h-2 rounded-full transition-all duration-300 ${isPowered
-                        ? 'bg-green-500 shadow-[0_0_15px_rgba(34,197,94,0.8)]'
-                        : 'bg-green-900/30'
+                <div
+                    className={`w-4 h-4 rounded-full border-2 border-white/20 flex items-center justify-center ${isPowered ? 'bg-white/5' : 'bg-transparent'}`}
+                >
+                    <div
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                            isPowered
+                                ? 'bg-green-500 shadow-[0_0_15px_rgba(34,197,94,0.8)]'
+                                : 'bg-green-900/30'
                         }`}
                     />
                 </div>
@@ -35,7 +39,10 @@ export const Server4U = ({ isPowered, rackWidth = '19inch' }: Server4UProps) => 
                     {/* Top Row */}
                     <div className="flex items-center gap-3">
                         {fans.map((i) => (
-                            <div key={`top-${i}`} className={`${rackWidth === '19inch' ? 'w-49' : 'w-40'} h-36 rounded-md border-2 border-white/10 flex items-center justify-center bg-black/20`}>
+                            <div
+                                key={`top-${i}`}
+                                className={`${rackWidth === '19inch' ? 'w-49' : 'w-40'} h-36 rounded-md border-2 border-white/10 flex items-center justify-center bg-black/20`}
+                            >
                                 <div className="w-34 h-28 rounded-md border border-white/5" />
                             </div>
                         ))}
@@ -43,7 +50,10 @@ export const Server4U = ({ isPowered, rackWidth = '19inch' }: Server4UProps) => 
                     {/* Bottom Row */}
                     <div className="flex items-center gap-3">
                         {fans.map((i) => (
-                            <div key={`bottom-${i}`} className={`${rackWidth === '19inch' ? 'w-49' : 'w-40'} h-36 rounded-md border-2 border-white/10 flex items-center justify-center bg-black/20`}>
+                            <div
+                                key={`bottom-${i}`}
+                                className={`${rackWidth === '19inch' ? 'w-49' : 'w-40'} h-36 rounded-md border-2 border-white/10 flex items-center justify-center bg-black/20`}
+                            >
                                 <div className="w-34 h-28 rounded-md border border-white/5" />
                             </div>
                         ))}

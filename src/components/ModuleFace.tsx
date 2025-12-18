@@ -27,10 +27,10 @@ export const ModuleFace = ({
             style={
                 hasImage
                     ? {
-                        backgroundImage: `url(${module.image})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }
+                          backgroundImage: `url(${module.image})`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                      }
                     : {}
             }
         >
@@ -47,13 +47,21 @@ export const ModuleFace = ({
                     <div className="flex gap-2 w-full justify-center">
                         {/* Networking: Ports */}
                         {module.type === 'network' && (
-                            <NetworkFace module={module} isPowered={isPowered} rackWidth={rackWidth} />
+                            <NetworkFace
+                                module={module}
+                                isPowered={isPowered}
+                                rackWidth={rackWidth}
+                            />
                         )}
 
                         {/* Server: Indicators or Drive Bays */}
                         {module.type === 'server' && (
                             <div className="w-full h-full">
-                                <ServerFace module={module} isPowered={isPowered} rackWidth={rackWidth} />
+                                <ServerFace
+                                    module={module}
+                                    isPowered={isPowered}
+                                    rackWidth={rackWidth}
+                                />
                             </div>
                         )}
 

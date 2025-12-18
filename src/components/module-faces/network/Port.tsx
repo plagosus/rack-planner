@@ -75,18 +75,20 @@ export const Port = ({
                 <div className="flex justify-between w-full px-[1px]">
                     {/* Green LED: On when online or active */}
                     <div
-                        className={`w-0.5 h-0.5 rounded-[0.5px] transition-colors duration-200 ${isPowered && status !== 'off'
-                            ? 'bg-green-500/50 shadow-[0_0_2px_rgba(34,197,94,0.6)]'
-                            : 'bg-green-900/60'
-                            }`}
+                        className={`w-0.5 h-0.5 rounded-[0.5px] transition-colors duration-200 ${
+                            isPowered && status !== 'off'
+                                ? 'bg-green-500/50 shadow-[0_0_2px_rgba(34,197,94,0.6)]'
+                                : 'bg-green-900/60'
+                        }`}
                     ></div>
 
                     {/* Amber LED: Blinking when active, Off otherwise */}
                     <div
-                        className={`w-0.5 h-0.5 rounded-[0.5px] transition-colors duration-50 ${isPowered && status === 'active' && isAmberOn
-                            ? 'bg-amber-500/40 shadow-[0_0_2px_rgba(245,158,11,0.6)]'
-                            : 'bg-amber-900/60'
-                            }`}
+                        className={`w-0.5 h-0.5 rounded-[0.5px] transition-colors duration-50 ${
+                            isPowered && status === 'active' && isAmberOn
+                                ? 'bg-amber-500/40 shadow-[0_0_2px_rgba(245,158,11,0.6)]'
+                                : 'bg-amber-900/60'
+                        }`}
                     ></div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 services:
-  rack-planner:
-    build: .
-    ports:
-      - "1019:80"
-    restart: always
+    rack-planner:
+        build: .
+        ports:
+            - '1019:80'
+        restart: always
