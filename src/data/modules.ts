@@ -15,20 +15,90 @@ export const PREDEFINED_MODULES: RackModule[] = [
     { id: 'server-4u', name: 'Server 4U', uSize: 4, type: 'server', color: 'bg-indigo-950' },
 
     // Storage
-    { id: 'nas-1u-35', name: '1U 3.5" HDD Bay', uSize: 1, type: 'storage', color: 'bg-gray-800', showName: false },
-    { id: 'nas-2u-35', name: '2U 3.5" HDD Bay', uSize: 2, type: 'storage', color: 'bg-gray-800', showName: false },
-    { id: 'nas-2u-25', name: '2U 2.5" SSD Bay', uSize: 2, type: 'storage', color: 'bg-gray-800', showName: false },
+    {
+        id: 'nas-1u-35',
+        name: '1U 3.5" HDD Bay',
+        uSize: 1,
+        type: 'storage',
+        color: 'bg-gray-800',
+        showName: false,
+    },
+    {
+        id: 'nas-2u-35',
+        name: '2U 3.5" HDD Bay',
+        uSize: 2,
+        type: 'storage',
+        color: 'bg-gray-800',
+        showName: false,
+    },
+    {
+        id: 'nas-2u-25',
+        name: '2U 2.5" SSD Bay',
+        uSize: 2,
+        type: 'storage',
+        color: 'bg-gray-800',
+        showName: false,
+    },
 
     // Networking
-    { id: 'switch-48', name: '48-Port Switch', uSize: 1, type: 'network', color: 'bg-cyan-950', showName: false },
-    { id: 'switch-24', name: '24-Port Switch', uSize: 1, type: 'network', color: 'bg-cyan-950', showName: false },
-    { id: 'switch-16', name: '16-Port Switch', uSize: 1, type: 'network', color: 'bg-cyan-950', showName: false },
-    { id: 'switch-8', name: '8-Port Switch', uSize: 1, type: 'network', color: 'bg-cyan-950', showName: false },
-    { id: 'switch-5', name: '5-Port Switch', uSize: 1, type: 'network', color: 'bg-cyan-950', showName: false },
+    {
+        id: 'switch-48',
+        name: '48-Port Switch',
+        uSize: 1,
+        type: 'network',
+        color: 'bg-cyan-950',
+        showName: false,
+    },
+    {
+        id: 'switch-24',
+        name: '24-Port Switch',
+        uSize: 1,
+        type: 'network',
+        color: 'bg-cyan-950',
+        showName: false,
+    },
+    {
+        id: 'switch-16',
+        name: '16-Port Switch',
+        uSize: 1,
+        type: 'network',
+        color: 'bg-cyan-950',
+        showName: false,
+    },
+    {
+        id: 'switch-8',
+        name: '8-Port Switch',
+        uSize: 1,
+        type: 'network',
+        color: 'bg-cyan-950',
+        showName: false,
+    },
+    {
+        id: 'switch-5',
+        name: '5-Port Switch',
+        uSize: 1,
+        type: 'network',
+        color: 'bg-cyan-950',
+        showName: false,
+    },
 
     // Power
-    { id: 'pdu-1u', name: 'PDU 1U', uSize: 1, type: 'power', color: 'bg-gray-800', showName: false },
-    { id: 'ups-1u', name: 'UPS 1U', uSize: 1, type: 'power', color: 'bg-gray-800', showName: false },
+    {
+        id: 'pdu-1u',
+        name: 'PDU 1U',
+        uSize: 1,
+        type: 'power',
+        color: 'bg-gray-800',
+        showName: false,
+    },
+    {
+        id: 'ups-1u',
+        name: 'UPS 1U',
+        uSize: 1,
+        type: 'power',
+        color: 'bg-gray-800',
+        showName: false,
+    },
 
     // Accessories
     {
@@ -76,5 +146,4 @@ export const PREDEFINED_MODULES: RackModule[] = [
         color: 'bg-slate-900',
         showName: false,
     },
-
 ];

@@ -79,7 +79,8 @@ If you just want to run the application without downloading the source code, you
     ```bash
     docker run -d -p 1019:80 brankko/rack-planner:latest
     ```
-    *(You can change `1019` to any port you prefer, e.g., `-p 8080:80`)*
+
+    _(You can change `1019` to any port you prefer, e.g., `-p 8080:80`)_
 
 3.  Access the application at [http://localhost:1019](http://localhost:1019).
 

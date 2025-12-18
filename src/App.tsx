@@ -23,8 +23,6 @@ const WIDTH_19_INCH = Math.round(19 * PIXELS_PER_INCH);
 const WIDTH_10_INCH = Math.round(10 * PIXELS_PER_INCH);
 const RAIL_WIDTH = Math.round(0.625 * PIXELS_PER_INCH);
 
-
-
 export default function App() {
     const [rackSettings, setRackSettings] = useState<RackSettings>({
         heightU: 10,
@@ -48,7 +46,10 @@ export default function App() {
         return false;
     });
     const [areAnimationsEnabled, setAreAnimationsEnabled] = useState(true);
-    const [draggedItem, setDraggedItem] = useState<{ module: RackModule; originalIndex?: number } | null>(null);
+    const [draggedItem, setDraggedItem] = useState<{
+        module: RackModule;
+        originalIndex?: number;
+    } | null>(null);
     const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [libraryTab, setLibraryTab] = useState<'catalog' | 'custom'>('catalog');
@@ -126,23 +127,23 @@ export default function App() {
                 // Old format: length === initialHeight
                 // New format: length === initialHeight * 2
                 if (parsedSlots.length === initialHeight) {
-                    console.log("Migrating rack slots to 0.5U resolution...");
+                    console.log('Migrating rack slots to 0.5U resolution...');
                     const newSlots: RackSlot[] = [];
 
-                    parsedSlots.forEach(oldSlot => {
+                    parsedSlots.forEach((oldSlot) => {
                         // Create 2 new slots for each old slot
                         // 1. Top Half (Original U position)
                         newSlots.push({
                             uPosition: oldSlot.uPosition,
                             moduleId: oldSlot.moduleId,
-                            module: oldSlot.module
+                            module: oldSlot.module,
                         });
 
                         // 2. Bottom Half (U position - 0.5)
                         newSlots.push({
                             uPosition: oldSlot.uPosition - 0.5,
                             moduleId: oldSlot.moduleId,
-                            module: oldSlot.module
+                            module: oldSlot.module,
                         });
                     });
 
@@ -182,7 +183,7 @@ export default function App() {
             // i=0 -> 10
             // i=1 -> 9.5
             // i=2 -> 9
-            uPosition: size - (i * 0.5),
+            uPosition: size - i * 0.5,
             moduleId: null,
         }));
         setRackSlots(slots);
@@ -205,7 +206,7 @@ export default function App() {
 
             // Generate new slots starting from newHeight down to (oldTop + 0.5)
             const newSlots: RackSlot[] = Array.from({ length: slotsToAdd }, (_, i) => ({
-                uPosition: newHeight - (i * 0.5),
+                uPosition: newHeight - i * 0.5,
                 moduleId: null,
             }));
             updatedSlots = [...newSlots, ...rackSlots];
@@ -217,7 +218,11 @@ export default function App() {
             // Safety check
             const hasModules = slotsToRemove.some((s) => s.moduleId !== null);
             if (hasModules) {
-                if (!confirm(`Reducing size will remove modules in the top ${slotsToRemoveCount / 2}U. Continue?`)) {
+                if (
+                    !confirm(
+                        `Reducing size will remove modules in the top ${slotsToRemoveCount / 2}U. Continue?`
+                    )
+                ) {
                     return; // Abort
                 }
             }
@@ -289,11 +294,7 @@ export default function App() {
             // If over a merged empty 1U slot (Even index, next is empty), check sub-position
             if (index % 2 === 0) {
                 const nextSlot = rackSlots[index + 1];
-                if (
-                    nextSlot &&
-                    rackSlots[index].moduleId === null &&
-                    nextSlot.moduleId === null
-                ) {
+                if (nextSlot && rackSlots[index].moduleId === null && nextSlot.moduleId === null) {
                     // This is a merged empty 1U slot. Check cursor position.
                     const rect = e.currentTarget.getBoundingClientRect();
                     const offsetY = e.clientY - rect.top;
@@ -505,8 +506,6 @@ export default function App() {
         );
     }
 
-
-
     return (
         <div className="h-screen w-full overflow-hidden flex flex-col">
             <div className="flex-1 flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
@@ -518,7 +517,9 @@ export default function App() {
                         </div>
                         <h1 className="font-bold tracking-tight">
                             RackPlanner{' '}
-                            <span className="text-xs font-normal opacity-60 ml-1">v{__APP_VERSION__}</span>
+                            <span className="text-xs font-normal opacity-60 ml-1">
+                                v{__APP_VERSION__}
+                            </span>
                         </h1>
                     </div>
 
@@ -599,9 +600,7 @@ export default function App() {
                             </div>
 
                             {/* Rails Container */}
-                            <div
-                                className="flex flex-col relative w-full border-x border-gray-800 bg-[#1a1b26] shadow-2xl shrink-0 transition-all duration-300 ease-in-out"
-                            >
+                            <div className="flex flex-col relative w-full border-x border-gray-800 bg-[#1a1b26] shadow-2xl shrink-0 transition-all duration-300 ease-in-out">
                                 {/* Static Background Rails - Fixed Visuals */}
                                 <div className="absolute inset-0 pointer-events-none z-0">
                                     {Array.from({ length: rackSettings.heightU }).map((_, i) => {
@@ -667,10 +666,12 @@ export default function App() {
                                 {rackSlots.map((slot, index) => {
                                     const isOccupied = slot.moduleId !== null;
                                     const prevSlot = index > 0 ? rackSlots[index - 1] : null;
-                                    const nextSlot = index < rackSlots.length - 1 ? rackSlots[index + 1] : null;
+                                    const nextSlot =
+                                        index < rackSlots.length - 1 ? rackSlots[index + 1] : null;
 
                                     // Module Logic
-                                    const isModuleStart = isOccupied && prevSlot?.moduleId !== slot.moduleId;
+                                    const isModuleStart =
+                                        isOccupied && prevSlot?.moduleId !== slot.moduleId;
 
                                     // 0.5U / Split Logic
                                     const isEvenIndex = index % 2 === 0; // Top of a U
@@ -725,14 +726,21 @@ export default function App() {
                                     // With 0.5U support, we need precise drag targeting.
                                     // If dragging 0.5U, we respect the exact dragOverIndex.
                                     // If dragging 1U+, we might be snapping effectiveDragIndex to even.
-                                    // BUT, checkCanDrop enforces Even for 1U+. 
+                                    // BUT, checkCanDrop enforces Even for 1U+.
                                     // So dragOverIndex might be Odd, but we want to visualize the snap to Even?
                                     // Or does the UI expect user to mouse over Even?
                                     // Let's stick to accurate feedback: If user hovers Odd with 1U, it's invalid (Red).
                                     // So we don't snap effectiveDragIndex for validity, but maybe for visual alignment if we wanted to be helpful.
                                     // For now, strict feedback:
 
-                                    const isValid = dragOverIndex !== null ? checkCanDrop(dragOverIndex, uSize, draggedItem?.originalIndex) : true;
+                                    const isValid =
+                                        dragOverIndex !== null
+                                            ? checkCanDrop(
+                                                  dragOverIndex,
+                                                  uSize,
+                                                  draggedItem?.originalIndex
+                                              )
+                                            : true;
                                     // Specificity check:
                                     // If dragging 0.5U (slotsNeeded=1).
                                     // If dragOverIndex = Even (0). Range [0, 1). Match 0.
@@ -750,35 +758,56 @@ export default function App() {
                                             if (dragOverIndex === index) {
                                                 showHighlight = true;
                                                 // If 0.5U, only top half. If 1U+, full inset.
-                                                highlightStyle = uSize === 0.5
-                                                    ? { top: 0, height: '50%', left: 0, right: 0 }
-                                                    : { inset: 0 };
-                                            } else if (uSize === 0.5 && dragOverIndex === index + 1) {
+                                                highlightStyle =
+                                                    uSize === 0.5
+                                                        ? {
+                                                              top: 0,
+                                                              height: '50%',
+                                                              left: 0,
+                                                              right: 0,
+                                                          }
+                                                        : { inset: 0 };
+                                            } else if (
+                                                uSize === 0.5 &&
+                                                dragOverIndex === index + 1
+                                            ) {
                                                 // 0.5U dragging to bottom half
                                                 showHighlight = true;
-                                                highlightStyle = { bottom: 0, height: '50%', left: 0, right: 0 };
+                                                highlightStyle = {
+                                                    bottom: 0,
+                                                    height: '50%',
+                                                    left: 0,
+                                                    right: 0,
+                                                };
                                             }
                                             // 2. Multi-U Overlap Logic
                                             // If a module starts ABOVE this slot, does it extend into/over this slot?
                                             // Range: [dragOverIndex, dragOverIndex + slotsNeeded)
                                             // Current Slot Range: [index, index + 2) (Includes index and index+1)
                                             // If dragOverIndex < index AND (dragOverIndex + slotsNeeded) > index
-                                            else if (dragOverIndex < index && (dragOverIndex + slotsNeeded) > index) {
+                                            else if (
+                                                dragOverIndex < index &&
+                                                dragOverIndex + slotsNeeded > index
+                                            ) {
                                                 showHighlight = true;
                                                 highlightStyle = { inset: 0 };
                                             }
-
                                         } else {
                                             // Standard Slot Logic
                                             // If this slot is within the drag target range
-                                            if (index >= dragOverIndex && index < dragOverIndex + slotsNeeded) {
+                                            if (
+                                                index >= dragOverIndex &&
+                                                index < dragOverIndex + slotsNeeded
+                                            ) {
                                                 showHighlight = true;
                                                 highlightStyle = { inset: 0 };
                                             }
                                         }
                                     }
 
-                                    const isMainDragTarget = dragOverIndex === index || (isMergedEmpty && dragOverIndex === index + 1);
+                                    const isMainDragTarget =
+                                        dragOverIndex === index ||
+                                        (isMergedEmpty && dragOverIndex === index + 1);
 
                                     return (
                                         <div
@@ -786,9 +815,12 @@ export default function App() {
                                             onDragOver={(e) => handleDragOver(e, index)}
                                             onDrop={(e) => handleDrop(e, index)}
                                             className="relative flex w-full transition-colors"
-                                            // Use renderedHeight. 
+                                            // Use renderedHeight.
                                             // NOTE: Module Start slot calculates full height.
-                                            style={{ height: renderedHeight, minHeight: renderedHeight }}
+                                            style={{
+                                                height: renderedHeight,
+                                                minHeight: renderedHeight,
+                                            }}
                                         >
                                             {/* (Left Rail removed - rendered in background) */}
 
@@ -796,15 +828,10 @@ export default function App() {
                                             <div className="flex-1 relative w-full h-full group">
                                                 {/* Empty Slot Placeholder */}
                                                 {!isOccupied && (
-                                                    <div
-                                                        className="relative w-full h-full flex items-center justify-center border-b border-gray-400/20 dark:border-white/5"
-                                                    >
-
-
-
-
+                                                    <div className="relative w-full h-full flex items-center justify-center border-b border-gray-400/20 dark:border-white/5">
                                                         <div className="text-gray-400/20 dark:text-white/10 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity select-none pointer-events-none">
-                                                            Empty {slot.uPosition} {isMergedEmpty ? 'U' : ''}
+                                                            Empty {slot.uPosition}{' '}
+                                                            {isMergedEmpty ? 'U' : ''}
                                                         </div>
                                                     </div>
                                                 )}
@@ -859,7 +886,7 @@ export default function App() {
                                                                                 ) {
                                                                                     newSlots[i] = {
                                                                                         ...newSlots[
-                                                                                        i
+                                                                                            i
                                                                                         ],
                                                                                         moduleId:
                                                                                             null,
@@ -887,8 +914,12 @@ export default function App() {
                                                         style={highlightStyle}
                                                     >
                                                         {isMainDragTarget && (
-                                                            <span className={`text-xs font-bold ${isValid ? 'text-indigo-500' : 'text-red-500'} bg-white dark:bg-gray-900 px-2 py-1 rounded shadow`}>
-                                                                {isValid ? `Mount Here (${uSize}U)` : 'Cannot Mount Here'}
+                                                            <span
+                                                                className={`text-xs font-bold ${isValid ? 'text-indigo-500' : 'text-red-500'} bg-white dark:bg-gray-900 px-2 py-1 rounded shadow`}
+                                                            >
+                                                                {isValid
+                                                                    ? `Mount Here (${uSize}U)`
+                                                                    : 'Cannot Mount Here'}
                                                             </span>
                                                         )}
                                                     </div>
@@ -1007,31 +1038,31 @@ export default function App() {
                                                                 {module.id.startsWith(
                                                                     'custom-'
                                                                 ) && (
-                                                                        <div className="flex items-center gap-1">
-                                                                            <button
-                                                                                onClick={(e) =>
-                                                                                    handleEditModule(
-                                                                                        e,
-                                                                                        module
-                                                                                    )
-                                                                                }
-                                                                                className="text-gray-400 hover:text-indigo-500"
-                                                                            >
-                                                                                <Pencil size={12} />
-                                                                            </button>
-                                                                            <button
-                                                                                onClick={(e) =>
-                                                                                    deleteCustomModule(
-                                                                                        e,
-                                                                                        module.id
-                                                                                    )
-                                                                                }
-                                                                                className="text-gray-400 hover:text-red-500"
-                                                                            >
-                                                                                <Trash2 size={12} />
-                                                                            </button>
-                                                                        </div>
-                                                                    )}
+                                                                    <div className="flex items-center gap-1">
+                                                                        <button
+                                                                            onClick={(e) =>
+                                                                                handleEditModule(
+                                                                                    e,
+                                                                                    module
+                                                                                )
+                                                                            }
+                                                                            className="text-gray-400 hover:text-indigo-500"
+                                                                        >
+                                                                            <Pencil size={12} />
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={(e) =>
+                                                                                deleteCustomModule(
+                                                                                    e,
+                                                                                    module.id
+                                                                                )
+                                                                            }
+                                                                            className="text-gray-400 hover:text-red-500"
+                                                                        >
+                                                                            <Trash2 size={12} />
+                                                                        </button>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     ))}
@@ -1043,10 +1074,10 @@ export default function App() {
                                     {Object.values(getGroupedModules()).every(
                                         (g) => g.length === 0
                                     ) && (
-                                            <div className="text-center p-4 text-gray-500 text-sm">
-                                                No items found
-                                            </div>
-                                        )}
+                                        <div className="text-center p-4 text-gray-500 text-sm">
+                                            No items found
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -1073,7 +1104,12 @@ export default function App() {
                                             onChange={(e) => setCustomShowName(e.target.checked)}
                                             className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                         />
-                                        <label htmlFor="showName" className="text-xs text-gray-500 cursor-pointer select-none">Show Name on Faceplate</label>
+                                        <label
+                                            htmlFor="showName"
+                                            className="text-xs text-gray-500 cursor-pointer select-none"
+                                        >
+                                            Show Name on Faceplate
+                                        </label>
                                     </div>
                                 </div>
 
